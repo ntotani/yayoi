@@ -36,7 +36,6 @@ local function main()
     director:setAnimationInterval(1.0 / 60)
     
     cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
-    cc.Director:getInstance():setContentScaleFactor(3)
     
     --create scene 
     local gameScene = require("GameLayer").createScene()

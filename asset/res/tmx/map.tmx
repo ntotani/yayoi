@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="27" height="48" tilewidth="40" tileheight="40">
+ <tileset firstgid="1" name="pipo-map001_at-sabaku" tilewidth="40" tileheight="40">
+  <image source="pipo-map001_at-sabaku.png" width="40" height="200"/>
+ </tileset>
+ <tileset firstgid="6" name="pipo-map001" tilewidth="40" tileheight="40">
+  <image source="pipo-map001.png" width="320" height="440"/>
+ </tileset>
+ <layer name="タイル・レイヤー 2" width="27" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztw0ENAAAMA6F71b/kGZgESFg1VVVVVdXnAe79HmE=
+  </data>
+ </layer>
+ <layer name="タイル・レイヤー 2" width="27" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztziEOACAMBMEa/v9lDIqAOyAkM0lNxbZVvNbGJFtzb7dP3Ur3b/y/ap/oAwAAAPysA8qlAG8=
+  </data>
+ </layer>
+</map>
