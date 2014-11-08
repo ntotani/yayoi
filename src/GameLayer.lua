@@ -1,5 +1,5 @@
 local _ = require("underscore")
-local ROW = 5
+local ROW = 4
 local COL = 5
 local TILE_WIDTH = 50
 
@@ -9,6 +9,8 @@ GameLayer = class("GameLayer",function()
 end)
 
 function GameLayer:ctor()
+    self.turn = -1
+
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
     self.tiles = _.range(1, ROW):map(function(i)
@@ -24,12 +26,10 @@ function GameLayer:ctor()
     self:addChild(self.friendsLayer)
     self.enemiesLayer = self:initHeros(1)
     self:addChild(self.enemiesLayer)
-
-    self.myChips = {}
-    _.range(1, 3):each(_.curry(self.drawChip, self))
-    local deck = cc.Sprite:create("img/chip_reverse.png")
-    deck:setPosition(self:idx2chipPos(4))
-    self:addChild(deck)
+    self.myChipsLayer = self:initChips(-1)
+    self:addChild(self.myChipsLayer)
+    self.hisChipsLayer = self:initChips(1)
+    self:addChild(self.hisChipsLayer)
 
     local listener = cc.EventListenerTouchOneByOne:create()
     listener:registerScriptHandler(_.curry(self.onTouchBegan, self), cc.Handler.EVENT_TOUCH_BEGAN)
@@ -66,29 +66,47 @@ function GameLayer:initHeros(dir)
     return layer
 end
 
+function GameLayer:initChips(turn)
+    local layer = cc.Layer:create()
+    _.range(1, 4):each(function(i)
+        self:drawChip(i, layer, turn)
+    end)
+    return layer
+end
+
 function GameLayer:idx2tilePos(i, j)
     local x = self.visibleSize.width / 2 + (j - (COL / 2 + 0.5)) * TILE_WIDTH
     local y = self.visibleSize.height / 2 + (i - (ROW / 2 + 0.5)) * TILE_WIDTH
     return cc.p(x, y)
 end
 
-function GameLayer:idx2chipPos(idx)
-    return cc.p(idx * 72, 80)
+function GameLayer:idx2chipPos(idx, turn)
+    local x = idx * 72
+    local y = 80
+    if turn > 0 then
+        x = self.visibleSize.width - x
+        y = self.visibleSize.height - y
+    end
+    return cc.p(x, y)
 end
 
-function GameLayer:drawChip(idx)
-    local dirs = {front = {i=0, j=1}, back = {i=0, j=-1}, left = {i=1, j=0}, right = {i=-1, j=0}}
-    local dir = _.keys(dirs)[math.random(1, 4)]
+function GameLayer:drawChip(idx, layer, turn)
+    local dirs = {front = {i=0, j=1}, left = {i=1, j=0}, right = {i=-1, j=0}}
+    local dir = _.keys(dirs)[math.random(1, 3)]
+    if dir == "front" and turn > 0 then
+        dir = "back"
+        dirs.back = {i=0, j=-1}
+    end
     local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
     chip.idx = idx
     chip.dir = dirs[dir]
-    chip:setPosition(self:idx2chipPos(idx))
-    self.myChips[idx] = chip
-    self:addChild(chip)
+    chip:setPosition(self:idx2chipPos(idx, turn))
+    layer:addChild(chip)
 end
 
 function GameLayer:onTouchBegan(touch, event)
-    self.holdChip = _.detect(self.myChips, function(e)
+    local layer = self.turn < 0 and self.myChipsLayer or self.hisChipsLayer
+    self.holdChip = _.detect(layer:getChildren(), function(e)
         return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
     end)
     return self.holdChip ~= nil
@@ -99,16 +117,17 @@ function GameLayer:onTouchMoved(touch, event)
 end
 
 function GameLayer:onTouchEnded(touch, event)
-    local player = _.detect(self.friendsLayer:getChildren(), function(e)
+    local heros = self.turn < 0 and self.friendsLayer or self.enemiesLayer
+    local player = _.detect(heros:getChildren(), function(e)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
         local ni = player.tile.i + self.holdChip.dir.i
         local nj = player.tile.j + self.holdChip.dir.j
         if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
-            local target = _.detect(self.friendsLayer:getChildren(), function(e)
-                return e.tile.i == ni and e.tile.j == nj
-            end)
+            local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
+            local target = _.detect(self.friendsLayer:getChildren(), eq)
+            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
             if target then
                 if #target.hearts == 1 then
                     target:removeFromParent()
@@ -121,10 +140,11 @@ function GameLayer:onTouchEnded(touch, event)
                 player:setPosition(self:idx2tilePos(ni, nj))
             end
         end
-        self:drawChip(self.holdChip.idx)
+        self:drawChip(self.holdChip.idx, self.turn < 0 and self.myChipsLayer or self.hisChipsLayer, self.turn)
         self.holdChip:removeFromParent()
+        self.turn = self.turn * -1
     else
-        self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx))
+        self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     end
     self.holdChip = nil
 end
