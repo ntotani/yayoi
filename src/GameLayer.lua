@@ -20,29 +20,10 @@ function GameLayer:ctor()
         end)
     end)
 
-    local myArea = 2
-    local friendsNum = 3
-    self.friendsLayer = cc.Layer:create()
-    _.range(1, ROW * myArea):chain():map(function(i)
-        return {i = i, lot = math.random()}
-    end):sort(function(a, b)
-        return a.lot < b.lot
-    end):head(friendsNum):map(function(e)
-        local player = CCBReaderLoad("PlayerNode.ccbi", cc.CCBProxy:create(), nil)
-        local row = math.ceil(e.i / myArea)
-        local col = e.i % myArea + 1
-        player:setPosition(self:idx2tilePos(row, col))
-        player:setScaleX(-1)
-        player.tile = {i = row, j = col}
-        player.hearts = _.range(1, 3):map(function(i)
-            local heart = cc.Sprite:create("img/heart.png")
-            heart:setPosition((i - 2) * heart:getContentSize().width, 20)
-            player:addChild(heart)
-            return heart
-        end)
-        self.friendsLayer:addChild(player)
-    end)
+    self.friendsLayer = self:initHeros(-1)
     self:addChild(self.friendsLayer)
+    self.enemiesLayer = self:initHeros(1)
+    self:addChild(self.enemiesLayer)
 
     self.myChips = {}
     _.range(1, 3):each(_.curry(self.drawChip, self))
@@ -56,6 +37,33 @@ function GameLayer:ctor()
     listener:registerScriptHandler(_.curry(self.onTouchEnded, self), cc.Handler.EVENT_TOUCH_CANCELLED)
     listener:registerScriptHandler(_.curry(self.onTouchEnded, self), cc.Handler.EVENT_TOUCH_ENDED)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(listener, self)
+end
+
+function GameLayer:initHeros(dir)
+    local myArea = 2
+    local heroNum = 3
+    local layer = cc.Layer:create()
+    _.range(1, ROW * myArea):chain():map(function(i)
+        return {i = i, lot = math.random()}
+    end):sort(function(a, b)
+        return a.lot < b.lot
+    end):head(heroNum):map(function(e)
+        local player = CCBReaderLoad("PlayerNode.ccbi", cc.CCBProxy:create(), nil)
+        local row = math.ceil(e.i / myArea)
+        local col = e.i % myArea + 1
+        if dir > 0 then col = COL - col + 1 end
+        player:setPosition(self:idx2tilePos(row, col))
+        player:setScaleX(dir)
+        player.tile = {i = row, j = col}
+        player.hearts = _.range(1, 3):map(function(i)
+            local heart = cc.Sprite:create("img/heart.png")
+            heart:setPosition((i - 2) * heart:getContentSize().width, 20)
+            player:addChild(heart)
+            return heart
+        end)
+        layer:addChild(player)
+    end)
+    return layer
 end
 
 function GameLayer:idx2tilePos(i, j)

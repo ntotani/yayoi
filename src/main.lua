@@ -25,6 +25,7 @@ local function main()
     -- avoid memory leak
     collectgarbage("setpause", 100)
     collectgarbage("setstepmul", 5000)
+    math.randomseed(os.time())
 
     -- initialize director
     local director = cc.Director:getInstance()
