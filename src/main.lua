@@ -7,7 +7,7 @@ cc.FileUtils:getInstance():addSearchPath("res/ccbi")
 require "cocos.init"
 
 -- cclog
-local cclog = function(...)
+cclog = function(...)
     print(string.format(...))
 end
 
