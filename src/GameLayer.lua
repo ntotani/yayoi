@@ -11,18 +11,31 @@ end)
 function GameLayer:ctor()
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
-    for i=1, ROW do
-        for j=1, COL do
+    self.tiles = _.range(1, ROW):map(function(i)
+        return _.range(1, COL):map(function(j)
             local tile = cc.Sprite:create("img/tile.png")
             tile:setPosition(self:idx2tilePos(i, j))
             self:addChild(tile)
-        end
-    end
+            return tile
+        end)
+    end)
 
-    local player = CCBReaderLoad("PlayerNode.ccbi", cc.CCBProxy:create(), nil)
-    player:setPosition(self:idx2tilePos(1, 1))
-    player:setScaleX(-1)
-    self:addChild(player)
+    local myArea = 2
+    local friendsNum = 3
+    self.friends = _.range(1, ROW * myArea):chain():map(function(i)
+        return {i = i, lot = math.random()}
+    end):sort(function(a, b)
+        return a.lot < b.lot
+    end):head(friendsNum):map(function(e)
+        local player = CCBReaderLoad("PlayerNode.ccbi", cc.CCBProxy:create(), nil)
+        local row = math.ceil(e.i / myArea)
+        local col = e.i % myArea + 1
+        player:setPosition(self:idx2tilePos(row, col))
+        player:setScaleX(-1)
+        player.tile = {i = row, j = col}
+        self:addChild(player)
+        return player
+    end):value()
 
     self.myChips = _.range(1, 3):map(function(i)
         local chip = cc.Sprite:create("img/chip_front.png")
@@ -54,7 +67,7 @@ function GameLayer:idx2chipPos(idx)
 end
 
 function GameLayer:onTouchBegan(touch, event)
-    self.holdChip = _(self.myChips):detect(function(e)
+    self.holdChip = _.detect(self.myChips, function(e)
         return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
     end)
     return self.holdChip ~= nil
@@ -65,6 +78,12 @@ function GameLayer:onTouchMoved(touch, event)
 end
 
 function GameLayer:onTouchEnded(touch, event)
+    local player = _.detect(self.friends, function(e)
+        return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
+    end)
+    if player then
+        player:setPosition(self:idx2tilePos(player.tile.i, player.tile.j + 1))
+    end
     self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx))
     self.holdChip = nil
 end
