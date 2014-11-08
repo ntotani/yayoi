@@ -91,16 +91,14 @@ function GameLayer:idx2chipPos(idx, turn)
 end
 
 function GameLayer:drawChip(idx, layer, turn)
-    local dirs = {front = {i=0, j=1}, left = {i=1, j=0}, right = {i=-1, j=0}}
-    local dir = _.keys(dirs)[math.random(1, 3)]
-    if dir == "front" and turn > 0 then
-        dir = "back"
-        dirs.back = {i=0, j=-1}
-    end
+    local dirs = {front = {i=0, j=1}, up = {i=1, j=0}, down = {i=-1, j=0}, ufront = {i=1, j=1}, dfront = {i=-1, j=1}}
+    local dir = _.keys(dirs)[math.random(1, 5)]
     local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
     chip.idx = idx
     chip.dir = dirs[dir]
+    chip.dir.j = -turn * chip.dir.j
     chip:setPosition(self:idx2chipPos(idx, turn))
+    chip:setScaleX(-turn)
     layer:addChild(chip)
 end
 
