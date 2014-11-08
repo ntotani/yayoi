@@ -37,13 +37,8 @@ function GameLayer:ctor()
         return player
     end):value()
 
-    self.myChips = _.range(1, 3):map(function(i)
-        local chip = cc.Sprite:create("img/chip_front.png")
-        chip:setPosition(self:idx2chipPos(i))
-        chip.idx = i
-        self:addChild(chip)
-        return chip
-    end)
+    self.myChips = {}
+    _.range(1, 3):each(_.curry(self.drawChip, self))
     local deck = cc.Sprite:create("img/chip_reverse.png")
     deck:setPosition(self:idx2chipPos(4))
     self:addChild(deck)
@@ -66,6 +61,17 @@ function GameLayer:idx2chipPos(idx)
     return cc.p(idx * 72, 80)
 end
 
+function GameLayer:drawChip(idx)
+    local dirs = {front = {i=0, j=1}, back = {i=0, j=-1}, left = {i=1, j=0}, right = {i=-1, j=0}}
+    local dir = _.keys(dirs)[math.random(1, 4)]
+    local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
+    chip.idx = idx
+    chip.dir = dirs[dir]
+    chip:setPosition(self:idx2chipPos(idx))
+    self.myChips[idx] = chip
+    self:addChild(chip)
+end
+
 function GameLayer:onTouchBegan(touch, event)
     self.holdChip = _.detect(self.myChips, function(e)
         return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
@@ -82,9 +88,18 @@ function GameLayer:onTouchEnded(touch, event)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
-        player:setPosition(self:idx2tilePos(player.tile.i, player.tile.j + 1))
+        local ni = player.tile.i + self.holdChip.dir.i
+        local nj = player.tile.j + self.holdChip.dir.j
+        if 0 < ni and ni < ROW and 0 < nj and nj < COL then
+            player.tile.i = ni
+            player.tile.j = nj
+            player:setPosition(self:idx2tilePos(ni, nj))
+        end
+        self:drawChip(self.holdChip.idx)
+        self.holdChip:removeFromParent()
+    else
+        self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx))
     end
-    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx))
     self.holdChip = nil
 end
 
