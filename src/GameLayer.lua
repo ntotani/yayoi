@@ -22,7 +22,8 @@ function GameLayer:ctor()
 
     local myArea = 2
     local friendsNum = 3
-    self.friends = _.range(1, ROW * myArea):chain():map(function(i)
+    self.friendsLayer = cc.Layer:create()
+    _.range(1, ROW * myArea):chain():map(function(i)
         return {i = i, lot = math.random()}
     end):sort(function(a, b)
         return a.lot < b.lot
@@ -33,9 +34,15 @@ function GameLayer:ctor()
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(-1)
         player.tile = {i = row, j = col}
-        self:addChild(player)
-        return player
-    end):value()
+        player.hearts = _.range(1, 3):map(function(i)
+            local heart = cc.Sprite:create("img/heart.png")
+            heart:setPosition((i - 2) * heart:getContentSize().width, 20)
+            player:addChild(heart)
+            return heart
+        end)
+        self.friendsLayer:addChild(player)
+    end)
+    self:addChild(self.friendsLayer)
 
     self.myChips = {}
     _.range(1, 3):each(_.curry(self.drawChip, self))
@@ -84,16 +91,27 @@ function GameLayer:onTouchMoved(touch, event)
 end
 
 function GameLayer:onTouchEnded(touch, event)
-    local player = _.detect(self.friends, function(e)
+    local player = _.detect(self.friendsLayer:getChildren(), function(e)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
         local ni = player.tile.i + self.holdChip.dir.i
         local nj = player.tile.j + self.holdChip.dir.j
-        if 0 < ni and ni < ROW and 0 < nj and nj < COL then
-            player.tile.i = ni
-            player.tile.j = nj
-            player:setPosition(self:idx2tilePos(ni, nj))
+        if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
+            local target = _.detect(self.friendsLayer:getChildren(), function(e)
+                return e.tile.i == ni and e.tile.j == nj
+            end)
+            if target then
+                if #target.hearts == 1 then
+                    target:removeFromParent()
+                else
+                    _(target.hearts):pop():removeFromParent()
+                end
+            else
+                player.tile.i = ni
+                player.tile.j = nj
+                player:setPosition(self:idx2tilePos(ni, nj))
+            end
         end
         self:drawChip(self.holdChip.idx)
         self.holdChip:removeFromParent()
