@@ -2,6 +2,11 @@ local _ = require("underscore")
 local ROW = 4
 local COL = 5
 local TILE_WIDTH = 50
+local DAMAGE = {
+    Player = {Player = 1, Witch = 2, Tank = 1},
+    Witch  = {Player = 1, Witch = 1, Tank = 2},
+    Tank   = {Player = 2, Witch = 1, Tank = 1}
+}
 
 local GameLayer = {}
 GameLayer = class("GameLayer",function()
@@ -57,6 +62,7 @@ function GameLayer:initHeros(dir)
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
         player.tile = {i = row, j = col}
+        player.job = job
         player.hearts = _.range(1, 3):map(function(i)
             local heart = cc.Sprite:create("img/heart.png")
             heart:setPosition((i - 2) * heart:getContentSize().width, 20)
@@ -128,16 +134,23 @@ function GameLayer:onTouchEnded(touch, event)
             local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
             local target = _.detect(self.friendsLayer:getChildren(), eq)
             target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-            if target then
-                if #target.hearts == 1 then
-                    target:removeFromParent()
-                else
-                    _(target.hearts):pop():removeFromParent()
-                end
-            else
+            local gain = function()
                 player.tile.i = ni
                 player.tile.j = nj
                 player:setPosition(self:idx2tilePos(ni, nj))
+            end
+            if target then
+                local dmg = DAMAGE[player.job][target.job]
+                if #target.hearts <= dmg then
+                    target:removeFromParent()
+                    gain()
+                else
+                    for i=1, dmg do
+                        _(target.hearts):pop():removeFromParent()
+                    end
+                end
+            else
+                gain()
             end
         end
         self:drawChip(self.holdChip.idx, self.turn < 0 and self.myChipsLayer or self.hisChipsLayer, self.turn)
