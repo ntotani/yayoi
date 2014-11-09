@@ -43,12 +43,14 @@ function GameLayer:initHeros(dir)
     local myArea = 2
     local heroNum = 3
     local layer = cc.Layer:create()
+    local jobs = {"Player", "Witch", "Tank"}
     _.range(1, ROW * myArea):chain():map(function(i)
         return {i = i, lot = math.random()}
     end):sort(function(a, b)
         return a.lot < b.lot
     end):head(heroNum):map(function(e)
-        local player = CCBReaderLoad("PlayerNode.ccbi", cc.CCBProxy:create(), nil)
+        local job = _.shift(jobs)
+        local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
         local row = math.ceil(e.i / myArea)
         local col = e.i % myArea + 1
         if dir > 0 then col = COL - col + 1 end
