@@ -25,7 +25,7 @@ function GameLayer:ctor(corner, form, seed)
     self.turn = -1
     self.redDeck = {}
     self.blueDeck = {}
-    math.randomseed(seed)
+    randomSeed(seed)
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
@@ -127,7 +127,7 @@ function GameLayer:refillDeck(deck)
     local chips = {}
     for key, var in pairs(DECK) do
         for i=1, var do
-            table.insert(chips, {chip = key, lot = math.random(1, 100)})
+            table.insert(chips, {chip = key, lot = random()})
         end
     end
     _(chips):chain():sort(function(a, b)
