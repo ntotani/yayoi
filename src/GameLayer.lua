@@ -7,14 +7,23 @@ local DAMAGE = {
     Witch  = {Player = 1, Witch = 1, Tank = 2},
     Tank   = {Player = 2, Witch = 1, Tank = 1}
 }
+local DECK = { front = 6, up = 3, down = 3, ufront = 6, dfront = 6}
 
 local GameLayer = {}
 GameLayer = class("GameLayer",function()
     return CCBReaderLoad("GameLayer.ccbi", cc.CCBProxy:create(), nil)
 end)
 
-function GameLayer:ctor()
+local function reverse(corner)
+    return corner == "red" and "blue" or "red"
+end
+
+function GameLayer:ctor(corner, form, seed)
+    self.corner = corner
     self.turn = -1
+    self.redDeck = {}
+    self.blueDeck = {}
+    math.randomseed(seed)
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
@@ -27,13 +36,13 @@ function GameLayer:ctor()
         end)
     end)
 
-    self.friendsLayer = self:initHeros(-1)
+    self.friendsLayer = self:initHeros(-1, form[corner])
     self:addChild(self.friendsLayer)
-    self.enemiesLayer = self:initHeros(1)
+    self.enemiesLayer = self:initHeros(1, form[reverse(corner)])
     self:addChild(self.enemiesLayer)
-    self.myChipsLayer = self:initChips(-1)
+    self.myChipsLayer = self:initChips(-1, self.redDeck)
     self:addChild(self.myChipsLayer)
-    self.hisChipsLayer = self:initChips(1)
+    self.hisChipsLayer = self:initChips(1, self.blueDeck)
     self:addChild(self.hisChipsLayer)
 
     local listener = cc.EventListenerTouchOneByOne:create()
@@ -44,21 +53,14 @@ function GameLayer:ctor()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(listener, self)
 end
 
-function GameLayer:initHeros(dir)
-    local myArea = 2
-    local heroNum = 3
+function GameLayer:initHeros(dir, form)
     local layer = cc.Layer:create()
     local jobs = {"Player", "Witch", "Tank"}
-    _.range(1, ROW * myArea):chain():map(function(i)
-        return {i = i, lot = math.random()}
-    end):sort(function(a, b)
-        return a.lot < b.lot
-    end):head(heroNum):map(function(e)
+    _.each(form, function(i)
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
-        local row = math.ceil(e.i / myArea)
-        local col = e.i % myArea + 1
-        if dir > 0 then col = COL - col + 1 end
+        local row = math.ceil(i / COL)
+        local col = (i - 1) % COL + 1
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
         player.tile = {i = row, j = col}
@@ -74,15 +76,18 @@ function GameLayer:initHeros(dir)
     return layer
 end
 
-function GameLayer:initChips(turn)
+function GameLayer:initChips(turn, deck)
     local layer = cc.Layer:create()
     _.range(1, 4):each(function(i)
-        self:drawChip(i, layer, turn)
+        self:drawChip(i, layer, turn, deck)
     end)
     return layer
 end
 
 function GameLayer:idx2tilePos(i, j)
+    if self.corner == "blue" then
+        j = COL - j + 1
+    end
     local x = self.visibleSize.width / 2 + (j - (COL / 2 + 0.5)) * TILE_WIDTH
     local y = self.visibleSize.height / 2 + (i - (ROW / 2 + 0.5)) * TILE_WIDTH
     return cc.p(x, y)
@@ -98,9 +103,10 @@ function GameLayer:idx2chipPos(idx, turn)
     return cc.p(x, y)
 end
 
-function GameLayer:drawChip(idx, layer, turn)
+function GameLayer:drawChip(idx, layer, turn, deck)
+    if #deck < 1 then deck = self:refillDeck() end
     local dirs = {front = {i=0, j=1}, up = {i=1, j=0}, down = {i=-1, j=0}, ufront = {i=1, j=1}, dfront = {i=-1, j=1}}
-    local dir = _.keys(dirs)[math.random(1, 5)]
+    local dir = _.shift(deck)
     local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
     chip.idx = idx
     chip.dir = dirs[dir]
@@ -108,6 +114,20 @@ function GameLayer:drawChip(idx, layer, turn)
     chip:setPosition(self:idx2chipPos(idx, turn))
     chip:setScaleX(-turn)
     layer:addChild(chip)
+end
+
+function GameLayer:refillDeck()
+    local deck = {}
+    for key, var in pairs(DECK) do
+        for i=1, var do
+            table.insert(deck, {chip = key, lot = math.random(1, 100)})
+        end
+    end
+    return _(deck):chain():sort(function(a, b)
+        return a.lot < b.lot
+    end):map(function(e)
+        return e.chip
+    end):value()
 end
 
 function GameLayer:onTouchBegan(touch, event)
@@ -160,12 +180,6 @@ function GameLayer:onTouchEnded(touch, event)
         self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     end
     self.holdChip = nil
-end
-
-function GameLayer.createScene()
-    local scene = cc.Scene:create()
-    scene:addChild(GameLayer.new())
-    return scene
 end
 
 return GameLayer

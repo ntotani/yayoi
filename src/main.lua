@@ -25,7 +25,6 @@ local function main()
     -- avoid memory leak
     collectgarbage("setpause", 100)
     collectgarbage("setstepmul", 5000)
-    math.randomseed(os.time())
 
     -- initialize director
     local director = cc.Director:getInstance()
@@ -39,12 +38,14 @@ local function main()
     cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
     
     --create scene 
-    local gameScene = require("RoomLayer").createScene()
+    local layer = require("GameLayer").new("red", {red = {1}, blue = {10}}, 1)
+    local scene = cc.Scene:create()
+    scene:addChild(layer)
     
     if cc.Director:getInstance():getRunningScene() then
-        cc.Director:getInstance():replaceScene(gameScene)
+        cc.Director:getInstance():replaceScene(scene)
     else
-        cc.Director:getInstance():runWithScene(gameScene)
+        cc.Director:getInstance():runWithScene(scene)
     end
 
 end
