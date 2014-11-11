@@ -38,7 +38,8 @@ local function main()
     cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
     
     --create scene 
-    local layer = require("GameLayer").new("red", {red = {1}, blue = {10}}, 1)
+    local layer = require("RoomLayer").new()
+    --local layer = require("GameLayer").new("red", {red = {1, 6, 11}, blue = {20, 15, 10}}, 0)
     local scene = cc.Scene:create()
     scene:addChild(layer)
     

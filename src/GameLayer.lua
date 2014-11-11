@@ -1,4 +1,6 @@
 local _ = require("underscore")
+local json = require("json")
+
 local ROW = 4
 local COL = 5
 local TILE_WIDTH = 50
@@ -40,9 +42,14 @@ function GameLayer:ctor(corner, form, seed)
     self:addChild(self.friendsLayer)
     self.enemiesLayer = self:initHeros(1, form[reverse(corner)])
     self:addChild(self.enemiesLayer)
-    self.myChipsLayer = self:initChips(-1, self.redDeck)
+    if corner == "red" then
+        self.myChipsLayer = self:initChips(-1, self.redDeck)
+        self.hisChipsLayer = self:initChips(1, self.blueDeck)
+    else
+        self.hisChipsLayer = self:initChips(1, self.redDeck)
+        self.myChipsLayer = self:initChips(-1, self.blueDeck)
+    end
     self:addChild(self.myChipsLayer)
-    self.hisChipsLayer = self:initChips(1, self.blueDeck)
     self:addChild(self.hisChipsLayer)
 
     local listener = cc.EventListenerTouchOneByOne:create()
@@ -104,7 +111,7 @@ function GameLayer:idx2chipPos(idx, turn)
 end
 
 function GameLayer:drawChip(idx, layer, turn, deck)
-    if #deck < 1 then deck = self:refillDeck() end
+    if #deck < 1 then self:refillDeck(deck) end
     local dirs = {front = {i=0, j=1}, up = {i=1, j=0}, down = {i=-1, j=0}, ufront = {i=1, j=1}, dfront = {i=-1, j=1}}
     local dir = _.shift(deck)
     local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
@@ -116,18 +123,18 @@ function GameLayer:drawChip(idx, layer, turn, deck)
     layer:addChild(chip)
 end
 
-function GameLayer:refillDeck()
-    local deck = {}
+function GameLayer:refillDeck(deck)
+    local chips = {}
     for key, var in pairs(DECK) do
         for i=1, var do
-            table.insert(deck, {chip = key, lot = math.random(1, 100)})
+            table.insert(chips, {chip = key, lot = math.random(1, 100)})
         end
     end
-    return _(deck):chain():sort(function(a, b)
+    _(chips):chain():sort(function(a, b)
         return a.lot < b.lot
-    end):map(function(e)
-        return e.chip
-    end):value()
+    end):each(function(e)
+        _.push(deck, e.chip)
+    end)
 end
 
 function GameLayer:onTouchBegan(touch, event)

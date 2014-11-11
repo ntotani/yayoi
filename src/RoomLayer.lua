@@ -22,6 +22,7 @@ function RoomLayer:ctor()
 end
 
 function RoomLayer:initWebsocket(isBuild)
+    self.corner = isBuild and "red" or "blue"
     self.ws = cc.WebSocket:create("ws://ws.pusherapp.com/app/753bbbbb0ecb441ce3eb?protocol=7")
     if nil ~= self.ws then
         self.ws:registerScriptHandler(function(msg)
@@ -30,7 +31,7 @@ function RoomLayer:initWebsocket(isBuild)
             if msg.event == "pusher:connection_established" then
                 local data = json.decode(msg.data)
                 local channelId = isBuild and "" or ccb.RoomLayer.number:getString()
-                self:initParse(data.socket_id, channelId, function(ret)
+                self:cloudFunc("pusher", {socket_id = data.socket_id, channel_id = channelId}, function(ret)
                     self.ws:sendString(json.encode({
                         event = "pusher:subscribe",
                         data = {
@@ -44,20 +45,25 @@ function RoomLayer:initWebsocket(isBuild)
                 end)
             elseif msg.event == "pusher_internal:subscription_succeeded" then
                 if not isBuild then
-                -- game start
+                    self:cloudFunc("start", {channel_id = ccb.RoomLayer.number:getString()}, function()end)
                 end
+            elseif msg.event == "start" then
+                local data = json.decode(msg.data)
+                local scene = cc.Scene:create()
+                scene:addChild(require("GameLayer").new(self.corner, data.form, data.seed))
+                cc.Director:getInstance():replaceScene(scene)
             end
         end, cc.WEBSOCKET_MESSAGE)
     end
 end
 
-function RoomLayer:initParse(socketId, channelId, callback)
+function RoomLayer:cloudFunc(name, params, callback)
     local xhr = cc.XMLHttpRequest:new()
     xhr.responseType = cc.XMLHTTPREQUEST_RESPONSE_JSON
     xhr:setRequestHeader("X-Parse-Application-Id", "so6Tb3E5JowUXObTBdnRJaBWXf8ZQZjAslBlmdoE")
     xhr:setRequestHeader("X-Parse-REST-API-Key", "rkfvd1LPNsIvYV40EfWKZXnYwKrXBDHLJpFj6tj6")
     xhr:setRequestHeader("Content-Type", "application/json")
-    xhr:open("POST", "https://api.parse.com/1/functions/pusher")
+    xhr:open("POST", "https://api.parse.com/1/functions/" .. name)
     xhr:registerScriptHandler(function()
         if xhr.readyState == 4 and (xhr.status >= 200 and xhr.status < 207) then
             local response = json.decode(xhr.response)
@@ -66,13 +72,7 @@ function RoomLayer:initParse(socketId, channelId, callback)
             print("xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status)
         end
     end)
-    xhr:send(json.encode({socket_id = socketId, channel_id = channelId}))
-end
-
-function RoomLayer.createScene()
-    local scene = cc.Scene:create()
-    scene:addChild(RoomLayer.new())
-    return scene
+    xhr:send(json.encode(params))
 end
 
 return RoomLayer
