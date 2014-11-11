@@ -39,7 +39,7 @@ local function main()
     cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
     
     --create scene 
-    local gameScene = require("GameLayer").createScene()
+    local gameScene = require("RoomLayer").createScene()
     
     if cc.Director:getInstance():getRunningScene() then
         cc.Director:getInstance():replaceScene(gameScene)
