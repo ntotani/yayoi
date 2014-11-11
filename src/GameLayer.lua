@@ -125,11 +125,11 @@ end
 
 function GameLayer:refillDeck(deck)
     local chips = {}
-    for key, var in pairs(DECK) do
-        for i=1, var do
-            table.insert(chips, {chip = key, lot = random()})
+    _(_.keys(DECK)):chain():sort():each(function(key)
+        for i=1, DECK[key] do
+            table.insert(chips, {chip = key, lot = random() % 100})
         end
-    end
+    end)
     _(chips):chain():sort(function(a, b)
         return a.lot < b.lot
     end):each(function(e)
