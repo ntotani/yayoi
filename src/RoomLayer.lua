@@ -51,7 +51,7 @@ function RoomLayer:initWebsocket(isBuild)
                 self.ws:unregisterScriptHandler(cc.WEBSOCKET_MESSAGE)
                 local data = json.decode(msg.data)
                 local scene = cc.Scene:create()
-                scene:addChild(require("GameLayer").new(self.ws, self.corner, data.form, data.seed))
+                scene:addChild(require("GameLayer").new(self.ws, data.id, self.corner, data.form, data.seed))
                 cc.Director:getInstance():replaceScene(scene)
             end
         end, cc.WEBSOCKET_MESSAGE)

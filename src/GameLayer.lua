@@ -20,8 +20,9 @@ local function reverse(corner)
     return corner == "red" and "blue" or "red"
 end
 
-function GameLayer:ctor(ws, corner, form, seed)
+function GameLayer:ctor(ws, matchId, corner, form, seed)
     self.ws = ws
+    self.matchId = matchId
     self.corner = corner
     self.turn = -1
     self.redDeck = {}
@@ -159,23 +160,44 @@ function GameLayer:onTouchEnded(touch, event)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
-    -- post message
-    else
-        self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
+        self:putAction(player.id .. self.holdChip.idx)
     end
+    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     self.holdChip = nil
+end
+
+function GameLayer:putAction(act)
+    local xhr = cc.XMLHttpRequest:new()
+    xhr.responseType = cc.XMLHTTPREQUEST_RESPONSE_JSON
+    xhr:setRequestHeader("X-Parse-Application-Id", "so6Tb3E5JowUXObTBdnRJaBWXf8ZQZjAslBlmdoE")
+    xhr:setRequestHeader("X-Parse-REST-API-Key", "rkfvd1LPNsIvYV40EfWKZXnYwKrXBDHLJpFj6tj6")
+    xhr:setRequestHeader("Content-Type", "application/json")
+    xhr:open("PUT", "https://api.parse.com/1/classes/Match/" .. self.matchId)
+    xhr:registerScriptHandler(function()
+        if xhr.readyState == 4 and (xhr.status >= 200 and xhr.status < 207) then
+            --print(xhr.response)
+            print("ok")
+        else
+            print("xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status)
+        end
+    end)
+    xhr:send(json.encode({acts = {__op = "Add", objects = {act}}}))
 end
 
 function GameLayer:onMessage(msg)
     msg = json.decode(msg)
     if msg.event == "turn" then
         local data = json.decode(msg.data)
-        local eq = function(e) return e.id == data.actor end
-        local target = _.detect(self.friendsLayer:getChildren(), eq)
-        target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-        local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
-        local chip = _.detect(chips:getChildren(), function(e) return e.idx == data.action end)
-        self:action(target, chip)
+        for i, e in ipairs(data) do
+            local actor = tonumber(e:sub(1, 1))
+            local action = tonumber(e:sub(2, 2))
+            local eq = function(e) return e.id == actor end
+            local target = _.detect(self.friendsLayer:getChildren(), eq)
+            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+            local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
+            local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
+            self:action(target, chip)
+        end
     end
 end
 

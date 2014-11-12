@@ -26,12 +26,8 @@ Parse.Cloud.define("pusher", function(request, response) {
     response.success(result);
 });
 
-Parse.Cloud.define("start", function(req, res) {
-    var body = JSON.stringify({
-        name: 'start',
-        data: JSON.stringify({form: {red: [1, 6, 11], blue:[20, 15, 10]}, seed: 0}),
-        channel: 'private-' + req.params.channel_id
-    });
+var push = function(body, success, error) {
+    body = JSON.stringify(body);
     var method = "POST";
     var path = "/apps/" + PUSHER_ID + "/events";
     var query = "auth_key=" + PUSHER_KEY;
@@ -46,11 +42,50 @@ Parse.Cloud.define("start", function(req, res) {
             'Content-Type': 'application/json'
         },
         body: body,
-        success: function(httpResponse) {
-            res.success(httpResponse.text);
+        success: success,
+        error: error
+    });
+}
+
+Parse.Cloud.define("start", function(req, res) {
+    var channelId = req.params.channel_id;
+    // TODO validate
+    var Match = Parse.Object.extend("Match");
+    var match = new Match();
+    match.save({
+        channel: channelId,
+        seed: 0,
+        acts: []
+    }, {
+        success: function(obj) {
+            push({
+                name: 'start',
+                data: JSON.stringify({id: obj.id, form: {red: [1, 6, 11], blue:[20, 15, 10]}, seed: obj.seed}),
+                channel: 'private-' + channelId
+            }, function(httpResponse) {
+                res.success(httpResponse.text);
+            }, function(httpResponse) {
+                res.error(httpResponse.status + ': ' + httpResponse.text);
+            });
         },
-        error: function(httpResponse) {
-            res.error(httpResponse.status + ': ' + httpResponse.text);
+        error: function(obj, error) {
+            res.error(error.message);
         }
     });
+});
+
+Parse.Cloud.afterSave("Match", function(request) {
+    var acts = request.object.get("acts");
+    // TODO validate
+    if (acts.length >= 2 && acts.length % 2 == 0) {
+        push({
+            name: 'turn',
+            data: JSON.stringify(acts.slice(-2)),
+            channel: 'private-' + request.object.get('channel')
+        }, function(httpResponse) {
+            console.log(httpResponse.text);
+        }, function(httpResponse) {
+            console.error(httpResponse.status + ': ' + httpResponse.text);
+        });
+    }
 });
