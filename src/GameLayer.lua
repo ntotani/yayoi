@@ -20,12 +20,14 @@ local function reverse(corner)
     return corner == "red" and "blue" or "red"
 end
 
-function GameLayer:ctor(corner, form, seed)
+function GameLayer:ctor(ws, corner, form, seed)
+    self.ws = ws
     self.corner = corner
     self.turn = -1
     self.redDeck = {}
     self.blueDeck = {}
     randomSeed(seed)
+    ws:registerScriptHandler(_.curry(self.onMessage, self), cc.WEBSOCKET_MESSAGE)
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
@@ -38,16 +40,16 @@ function GameLayer:ctor(corner, form, seed)
         end)
     end)
 
-    self.friendsLayer = self:initHeros(-1, form[corner])
+    self.friendsLayer = self:initHeros(-1, form, corner)
     self:addChild(self.friendsLayer)
-    self.enemiesLayer = self:initHeros(1, form[reverse(corner)])
+    self.enemiesLayer = self:initHeros(1, form, reverse(corner))
     self:addChild(self.enemiesLayer)
     if corner == "red" then
-        self.myChipsLayer = self:initChips(-1, self.redDeck)
-        self.hisChipsLayer = self:initChips(1, self.blueDeck)
+        self.myChipsLayer = self:initChips(-1, "red")
+        self.hisChipsLayer = self:initChips(1, "blue")
     else
-        self.hisChipsLayer = self:initChips(1, self.redDeck)
-        self.myChipsLayer = self:initChips(-1, self.blueDeck)
+        self.hisChipsLayer = self:initChips(1, "red")
+        self.myChipsLayer = self:initChips(-1, "blue")
     end
     self:addChild(self.myChipsLayer)
     self:addChild(self.hisChipsLayer)
@@ -60,10 +62,11 @@ function GameLayer:ctor(corner, form, seed)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(listener, self)
 end
 
-function GameLayer:initHeros(dir, form)
+function GameLayer:initHeros(dir, form, corner)
     local layer = cc.Layer:create()
     local jobs = {"Player", "Witch", "Tank"}
-    _.each(form, function(i)
+    local id = (corner == "blue" and 4 or 1)
+    _.each(form[corner], function(i)
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
         local row = math.ceil(i / COL)
@@ -72,6 +75,8 @@ function GameLayer:initHeros(dir, form)
         player:setScaleX(dir)
         player.tile = {i = row, j = col}
         player.job = job
+        player.id = id
+        id = id + 1
         player.hearts = _.range(1, 3):map(function(i)
             local heart = cc.Sprite:create("img/heart.png")
             heart:setPosition((i - 2) * heart:getContentSize().width, 20)
@@ -83,10 +88,10 @@ function GameLayer:initHeros(dir, form)
     return layer
 end
 
-function GameLayer:initChips(turn, deck)
+function GameLayer:initChips(turn, corner)
     local layer = cc.Layer:create()
     _.range(1, 4):each(function(i)
-        self:drawChip(i, layer, turn, deck)
+        self:drawChip(i, layer, turn, corner)
     end)
     return layer
 end
@@ -110,14 +115,15 @@ function GameLayer:idx2chipPos(idx, turn)
     return cc.p(x, y)
 end
 
-function GameLayer:drawChip(idx, layer, turn, deck)
+function GameLayer:drawChip(idx, layer, turn, corner)
+    local deck = corner == "red" and self.redDeck or self.blueDeck
     if #deck < 1 then self:refillDeck(deck) end
     local dirs = {front = {i=0, j=1}, up = {i=1, j=0}, down = {i=-1, j=0}, ufront = {i=1, j=1}, dfront = {i=-1, j=1}}
     local dir = _.shift(deck)
     local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
     chip.idx = idx
     chip.dir = dirs[dir]
-    chip.dir.j = -turn * chip.dir.j
+    chip.dir.j = (corner == "red" and 1 or -1) * chip.dir.j
     chip:setPosition(self:idx2chipPos(idx, turn))
     chip:setScaleX(-turn)
     layer:addChild(chip)
@@ -138,8 +144,7 @@ function GameLayer:refillDeck(deck)
 end
 
 function GameLayer:onTouchBegan(touch, event)
-    local layer = self.turn < 0 and self.myChipsLayer or self.hisChipsLayer
-    self.holdChip = _.detect(layer:getChildren(), function(e)
+    self.holdChip = _.detect(self.myChipsLayer:getChildren(), function(e)
         return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
     end)
     return self.holdChip ~= nil
@@ -150,43 +155,58 @@ function GameLayer:onTouchMoved(touch, event)
 end
 
 function GameLayer:onTouchEnded(touch, event)
-    local heros = self.turn < 0 and self.friendsLayer or self.enemiesLayer
-    local player = _.detect(heros:getChildren(), function(e)
+    local player = _.detect(self.friendsLayer:getChildren(), function(e)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
-        local ni = player.tile.i + self.holdChip.dir.i
-        local nj = player.tile.j + self.holdChip.dir.j
-        if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
-            local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
-            local target = _.detect(self.friendsLayer:getChildren(), eq)
-            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-            local gain = function()
-                player.tile.i = ni
-                player.tile.j = nj
-                player:setPosition(self:idx2tilePos(ni, nj))
-            end
-            if target then
-                local dmg = DAMAGE[player.job][target.job]
-                if #target.hearts <= dmg then
-                    target:removeFromParent()
-                    gain()
-                else
-                    for i=1, dmg do
-                        _(target.hearts):pop():removeFromParent()
-                    end
-                end
-            else
-                gain()
-            end
-        end
-        self:drawChip(self.holdChip.idx, self.turn < 0 and self.myChipsLayer or self.hisChipsLayer, self.turn)
-        self.holdChip:removeFromParent()
-        self.turn = self.turn * -1
+    -- post message
     else
         self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     end
     self.holdChip = nil
+end
+
+function GameLayer:onMessage(msg)
+    msg = json.decode(msg)
+    if msg.event == "turn" then
+        local data = json.decode(msg.data)
+        local eq = function(e) return e.id == data.actor end
+        local target = _.detect(self.friendsLayer:getChildren(), eq)
+        target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+        local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
+        local chip = _.detect(chips:getChildren(), function(e) return e.idx == data.action end)
+        self:action(target, chip)
+    end
+end
+
+function GameLayer:action(player, chip)
+    local ni = player.tile.i + chip.dir.i
+    local nj = player.tile.j + chip.dir.j
+    if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
+        local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
+        local target = _.detect(self.friendsLayer:getChildren(), eq)
+        target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+        local gain = function()
+            player.tile.i = ni
+            player.tile.j = nj
+            player:setPosition(self:idx2tilePos(ni, nj))
+        end
+        if target then
+            local dmg = DAMAGE[player.job][target.job]
+            if #target.hearts <= dmg then
+                target:removeFromParent()
+                gain()
+            else
+                for i=1, dmg do
+                    _(target.hearts):pop():removeFromParent()
+                end
+            end
+        else
+            gain()
+        end
+    end
+    --self:drawChip(self.holdChip.idx, self.turn < 0 and self.myChipsLayer or self.hisChipsLayer, self.turn)
+    chip:removeFromParent()
 end
 
 return GameLayer

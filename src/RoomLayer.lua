@@ -48,9 +48,10 @@ function RoomLayer:initWebsocket(isBuild)
                     self:cloudFunc("start", {channel_id = ccb.RoomLayer.number:getString()}, function()end)
                 end
             elseif msg.event == "start" then
+                self.ws:unregisterScriptHandler(cc.WEBSOCKET_MESSAGE)
                 local data = json.decode(msg.data)
                 local scene = cc.Scene:create()
-                scene:addChild(require("GameLayer").new(self.corner, data.form, data.seed))
+                scene:addChild(require("GameLayer").new(self.ws, self.corner, data.form, data.seed))
                 cc.Director:getInstance():replaceScene(scene)
             end
         end, cc.WEBSOCKET_MESSAGE)
