@@ -39,7 +39,7 @@ local function main()
     
     --create scene 
     local layer = require("RoomLayer").new()
-    --local layer = require("GameLayer").new("red", {red = {1, 6, 11}, blue = {20, 15, 10}}, 0)
+    --local layer = require("GameLayer").new({registerScriptHandler = function(a,b)end}, "hoge", "red", {red = {1, 6, 11}, blue = {20, 15, 10}}, 0)
     local scene = cc.Scene:create()
     scene:addChild(layer)
     

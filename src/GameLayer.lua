@@ -188,47 +188,81 @@ function GameLayer:onMessage(msg)
     msg = json.decode(msg)
     if msg.event == "turn" then
         local data = json.decode(msg.data)
-        for i, e in ipairs(data) do
-            local actor = tonumber(e:sub(1, 1))
-            local action = tonumber(e:sub(2, 2))
-            local eq = function(e) return e.id == actor end
-            local target = _.detect(self.friendsLayer:getChildren(), eq)
-            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-            local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
-            local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
-            self:action(target, chip)
+        local redIdx = 1
+        local blueIdx = 1
+        local func = function()end
+        func = function(i)
+            if i > #data then
+                if self.corner == "red" then
+                    self:drawChip(redIdx, self.myChipsLayer, -1, "red")
+                    self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
+                else
+                    self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
+                    self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
+                end
+            else
+                local e = data[i]
+                local actor = tonumber(e:sub(1, 1))
+                local action = tonumber(e:sub(2, 2))
+                local eq = function(e) return e.id == actor end
+                local target = _.detect(self.friendsLayer:getChildren(), eq)
+                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+                local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
+                local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
+                self:action(target, chip, _.curry(func, i + 1))
+                if actor <= 3 then
+                    redIdx = action
+                else
+                    blueIdx = action
+                end
+            end
         end
+        func(1)
     end
 end
 
-function GameLayer:action(player, chip)
-    local ni = player.tile.i + chip.dir.i
-    local nj = player.tile.j + chip.dir.j
-    if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
-        local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
-        local target = _.detect(self.friendsLayer:getChildren(), eq)
-        target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-        local gain = function()
-            player.tile.i = ni
-            player.tile.j = nj
-            player:setPosition(self:idx2tilePos(ni, nj))
-        end
-        if target then
-            local dmg = DAMAGE[player.job][target.job]
-            if #target.hearts <= dmg then
-                target:removeFromParent()
-                gain()
-            else
-                for i=1, dmg do
-                    _(target.hearts):pop():removeFromParent()
+function GameLayer:action(player, chip, callback)
+    chip:runAction(cc.Sequence:create(
+        cc.MoveTo:create(0.5, cc.p(player:getPosition())),
+        cc.CallFunc:create(function()
+            local ni = player.tile.i + chip.dir.i
+            local nj = player.tile.j + chip.dir.j
+            local playerSeq = {
+                cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)),
+                cc.MoveTo:create(0.1, self:idx2tilePos(player.tile.i, player.tile.j)),
+                cc.DelayTime:create(0.3)
+            }
+            if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
+                local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
+                local target = _.detect(self.friendsLayer:getChildren(), eq)
+                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+                local gain = function()
+                    table.insert(playerSeq, cc.MoveTo:create(0.5, self:idx2tilePos(ni, nj)))
+                    table.insert(playerSeq, cc.CallFunc:create(function()
+                        player.tile.i = ni
+                        player.tile.j = nj
+                    end))
+                end
+                if target then
+                    local dmg = DAMAGE[player.job][target.job]
+                    if #target.hearts <= dmg then
+                        target:removeFromParent()
+                        gain()
+                    else
+                        for i=1, dmg do
+                            _(target.hearts):pop():removeFromParent()
+                        end
+                    end
+                else
+                    gain()
                 end
             end
-        else
-            gain()
-        end
-    end
-    --self:drawChip(self.holdChip.idx, self.turn < 0 and self.myChipsLayer or self.hisChipsLayer, self.turn)
-    chip:removeFromParent()
+            table.insert(playerSeq, cc.CallFunc:create(callback))
+            player:stopAllActions()
+            player:runAction(cc.Sequence:create(playerSeq))
+            chip:removeFromParent()
+        end)
+    ))
 end
 
 return GameLayer
