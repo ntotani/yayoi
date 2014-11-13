@@ -5,11 +5,19 @@ local RoomLayer = {}
 RoomLayer = class("RoomLayer",function()
     local layer = nil
     ccb.RoomLayer = {
-        build = function() layer:initWebsocket(true) end,
-        join = function() layer:initWebsocket(false) end
+        build = function()
+            ccb.RoomLayer.number:setString("connecting...")
+            ccb.RoomLayer.mAnimationManager:runAnimationsForSequenceNamed("wait")
+            layer:initWebsocket(true)
+        end,
+        join = function()
+            ccb.RoomLayer.mAnimationManager:runAnimationsForSequenceNamed("wait")
+            layer:initWebsocket(false)
+        end
     }
     for i=0, 9 do
         ccb.RoomLayer["num" .. i] = function()
+            ccb.RoomLayer.mAnimationManager:runAnimationsForSequenceNamed("join")
             ccb.RoomLayer.number:setString(ccb.RoomLayer.number:getString() .. i)
         end
     end
