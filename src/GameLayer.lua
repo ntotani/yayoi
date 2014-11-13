@@ -27,6 +27,7 @@ function GameLayer:ctor(ws, matchId, corner, form, seed)
     self.turn = -1
     self.redDeck = {}
     self.blueDeck = {}
+    self.canTouch = true
     randomSeed(seed)
     ws:registerScriptHandler(_.curry(self.onMessage, self), cc.WEBSOCKET_MESSAGE)
 
@@ -148,7 +149,7 @@ function GameLayer:onTouchBegan(touch, event)
     self.holdChip = _.detect(self.myChipsLayer:getChildren(), function(e)
         return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
     end)
-    return self.holdChip ~= nil
+    return self.holdChip ~= nil and self.canTouch
 end
 
 function GameLayer:onTouchMoved(touch, event)
@@ -160,6 +161,7 @@ function GameLayer:onTouchEnded(touch, event)
         return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
+        self.canTouch = false
         self:putAction(player.id .. self.holdChip.idx)
     end
     self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
@@ -200,6 +202,7 @@ function GameLayer:onMessage(msg)
                     self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
                     self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
                 end
+                self.canTouch = true
             else
                 local e = data[i]
                 local actor = tonumber(e:sub(1, 1))
@@ -227,23 +230,25 @@ function GameLayer:action(player, chip, callback)
         cc.CallFunc:create(function()
             local ni = player.tile.i + chip.dir.i
             local nj = player.tile.j + chip.dir.j
-            local playerSeq = {
-                cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)),
-                cc.MoveTo:create(0.1, self:idx2tilePos(player.tile.i, player.tile.j)),
-                cc.DelayTime:create(0.3)
-            }
+            local playerSeq = {}
+            local lush = function()
+                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)))
+                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(player.tile.i, player.tile.j)))
+                table.insert(playerSeq, cc.DelayTime:create(0.3))
+            end
+            local gain = function()
+                table.insert(playerSeq, cc.MoveTo:create(0.5, self:idx2tilePos(ni, nj)))
+                table.insert(playerSeq, cc.CallFunc:create(function()
+                    player.tile.i = ni
+                    player.tile.j = nj
+                end))
+            end
             if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
                 local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
                 local target = _.detect(self.friendsLayer:getChildren(), eq)
                 target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-                local gain = function()
-                    table.insert(playerSeq, cc.MoveTo:create(0.5, self:idx2tilePos(ni, nj)))
-                    table.insert(playerSeq, cc.CallFunc:create(function()
-                        player.tile.i = ni
-                        player.tile.j = nj
-                    end))
-                end
                 if target then
+                    lush()
                     local dmg = DAMAGE[player.job][target.job]
                     if #target.hearts <= dmg then
                         target:removeFromParent()
@@ -256,6 +261,8 @@ function GameLayer:action(player, chip, callback)
                 else
                     gain()
                 end
+            else
+                lush()
             end
             table.insert(playerSeq, cc.CallFunc:create(callback))
             player:stopAllActions()
