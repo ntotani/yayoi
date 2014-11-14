@@ -54,7 +54,7 @@ Parse.Cloud.define("start", function(req, res) {
     var match = new Match();
     match.save({
         channel: channelId,
-        seed: 0,
+        seed: Math.floor(Math.random() * 100000),
         acts: []
     }, {
         success: function(obj) {
