@@ -35,7 +35,7 @@ local function main()
     --set FPS. the default value is 1.0/60 if you don't call this
     director:setAnimationInterval(1.0 / 60)
     
-    cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
+    director:getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
     
     --create scene 
     local layer = require("RoomLayer").new()
@@ -43,10 +43,10 @@ local function main()
     local scene = cc.Scene:create()
     scene:addChild(layer)
     
-    if cc.Director:getInstance():getRunningScene() then
-        cc.Director:getInstance():replaceScene(scene)
+    if director:getRunningScene() then
+        director:replaceScene(scene)
     else
-        cc.Director:getInstance():runWithScene(scene)
+        director:runWithScene(scene)
     end
 
 end
