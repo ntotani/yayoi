@@ -83,6 +83,15 @@ void ConfigParser::readConfig()
             }
         }
     }
+    if (_docRootjson.HasMember("test_cases"))
+    {
+        auto &testCases = _docRootjson["test_cases"];
+        if (testCases.IsArray()) {
+            for (int i = 0; i < testCases.Size(); i++) {
+                _testCases.push_back(testCases[i].GetString());
+            }
+        }
+    }
     if (_docRootjson.HasMember("simulator_screen_size"))
     {
         const rapidjson::Value& ArrayScreenSize = _docRootjson["simulator_screen_size"];
@@ -156,4 +165,14 @@ int ConfigParser::getScreenSizeCount(void)
 const SimulatorScreenSize ConfigParser::getScreenSize(int index)
 {
     return _screenSizeArray.at(index);
+}
+
+const vector<string>& ConfigParser::getTestCases() const
+{
+    return _testCases;
+}
+
+void ConfigParser::setTestAsEntry(int index)
+{
+    _entryfile = "test/" + _testCases[index] + ".lua";
 }

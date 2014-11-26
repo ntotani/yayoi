@@ -39,6 +39,8 @@ public:
     int getUploadPort();
     bool isLanscape();
     bool isWindowTop();
+    const vector<string>& getTestCases() const;
+    void setTestAsEntry(int index);
     
 private:
     void readConfig();
@@ -52,6 +54,7 @@ private:
     bool _isWindowTop;
     int _consolePort;
     int _uploadPort;
+    vector<string> _testCases;
     
     rapidjson::Document _docRootjson;
 };

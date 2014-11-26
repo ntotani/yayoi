@@ -36,6 +36,8 @@ THE SOFTWARE.
 #include "Protos.pb.h"
 #include "zlib.h"
 #include "lua.h"
+#include "UIListView.h"
+#include "UIText.h"
 
 // header files for directory operation
 #ifdef _WIN32
@@ -49,6 +51,7 @@ THE SOFTWARE.
 
 using namespace std;
 using namespace cocos2d;
+using namespace ui;
 
 std::string g_resourcePath;
 static std::string g_projectPath;
@@ -801,6 +804,33 @@ public:
         _labelUploadFile->setPosition(Point(VisibleRect::leftTop().x + spaceSizex, IPlabel->getPositionY()- spaceSizex));
         _labelUploadFile->setAlignment(TextHAlignment::LEFT);
         addChild(_labelUploadFile, 9003);
+
+        auto listView = ListView::create();
+        listView->setContentSize(Size(VisibleRect::center().x, VisibleRect::top().y / 4));
+        listView->setBackGroundColor(Color3B::BLACK);
+        listView->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+        listView->setAnchorPoint(Vec2(0.5, 0.5));
+        listView->setPosition(VisibleRect::center());
+        listView->setDirection(ScrollView::Direction::VERTICAL);
+        listView->setGravity(ListView::Gravity::CENTER_HORIZONTAL);
+        listView->setBounceEnabled(true);
+        listView->setTouchEnabled(true);
+        listView->addEventListener([listView](Ref* sender, ListView::EventType event) {
+            if (event == ListView::EventType::ON_SELECTED_ITEM_START) {
+                int idx = (int)listView->getCurSelectedIndex();
+                for (auto e : listView->getItems()) {
+                    ((Text*)e)->setFontSize(36);
+                }
+                ((Text*)listView->getItem(idx))->setFontSize(48);
+                ConfigParser::getInstance()->setTestAsEntry(idx);
+            }
+        });
+        for (auto e : ConfigParser::getInstance()->getTestCases()) {
+            auto text = Text::create(e, "", 36);
+            text->setTouchEnabled(true);
+            listView->pushBackCustomItem(text);
+        }
+        addChild(listView, 10000);
 
         if (ConfigParser::getInstance()->isLanscape())
         {
