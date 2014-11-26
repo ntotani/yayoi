@@ -11,6 +11,7 @@
 #include "3d/lua_cocos2dx_3d_manual.h"
 #include "audioengine/lua_cocos2dx_audioengine_manual.h"
 #include "lua/quick/lua_cocos2dx_quick_manual.hpp"
+#include "lua_yayoi.hpp"
 
 int lua_module_register(lua_State* L)
 {
@@ -26,6 +27,7 @@ int lua_module_register(lua_State* L)
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     register_audioengine_module(L);
 #endif
+    register_all_yayoi(L);
     return 1;
 }
 
