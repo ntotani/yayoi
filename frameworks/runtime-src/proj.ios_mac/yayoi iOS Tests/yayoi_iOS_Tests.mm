@@ -9,28 +9,21 @@ using namespace yayoi;
 @end
 
 @implementation yayoi_iOS_Tests {
-    Piece *_piece;
+    Piece *_p;
 }
 
 - (void)setUp {
     [super setUp];
-    _piece = new Piece();
+    _p = new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}});
 }
 
 - (void)tearDown {
-    delete _piece;
+    delete _p;
     [super tearDown];
 }
 
-- (void)testGetPieceID {
-    XCTAssertEqual(0, _piece->getPieceID());
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)testGetStatus {
+    XCTAssertEqual(100, _p->getStatus(Piece::POWER));
 }
 
 @end
