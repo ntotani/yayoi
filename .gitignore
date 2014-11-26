@@ -143,3 +143,4 @@ cmake_install.cmake
 /runtime/ios/*
 !/runtime/ios/ios-sim
 /publish
+/tools/userconf.ini
