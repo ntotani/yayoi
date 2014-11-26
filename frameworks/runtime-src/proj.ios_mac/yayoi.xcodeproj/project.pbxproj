@@ -104,6 +104,9 @@
 		C07828F818B4D72E00BD2287 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C07828F418B4D72E00BD2287 /* main.m */; };
 		C07828FA18B4D72E00BD2287 /* SimulatorApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = C07828F718B4D72E00BD2287 /* SimulatorApp.mm */; };
 		C64BD5481A256251002C4453 /* test in Resources */ = {isa = PBXBuildFile; fileRef = C64BD5471A256251002C4453 /* test */; };
+		C64BD5611A25E839002C4453 /* Piece.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C64BD55F1A25E839002C4453 /* Piece.cpp */; };
+		C64BD56B1A25E85D002C4453 /* yayoi_iOS_Tests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */; };
+		C64BD5711A25E8F8002C4453 /* Piece.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C64BD55F1A25E839002C4453 /* Piece.cpp */; };
 		D6B061351803AC000077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061341803AC000077942B /* CoreMotion.framework */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -171,6 +174,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1551A33E158F2AB200E66CFE;
 			remoteInfo = "cocos2dx Mac";
+		};
+		C64BD56C1A25E85D002C4453 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F293B3BF15EB7BE500256477 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F293B3C715EB7BE500256477;
+			remoteInfo = "yayoi iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -278,6 +288,11 @@
 		C07828F618B4D72E00BD2287 /* SimulatorApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatorApp.h; sourceTree = "<group>"; };
 		C07828F718B4D72E00BD2287 /* SimulatorApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SimulatorApp.mm; sourceTree = "<group>"; };
 		C64BD5471A256251002C4453 /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; name = test; path = ../../../test; sourceTree = "<group>"; };
+		C64BD55F1A25E839002C4453 /* Piece.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Piece.cpp; sourceTree = "<group>"; };
+		C64BD5601A25E839002C4453 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Piece.h; sourceTree = "<group>"; };
+		C64BD5661A25E85C002C4453 /* yayoi iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "yayoi iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C64BD5691A25E85D002C4453 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = yayoi_iOS_Tests.mm; sourceTree = "<group>"; };
 		D6B061341803AC000077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		F293B3C815EB7BE500256477 /* yayoi iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "yayoi iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3CC15EB7BE500256477 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -311,6 +326,13 @@
 				5023814217EBBCE400990C9B /* AVFoundation.framework in Frameworks */,
 				5023814417EBBCE400990C9B /* Foundation.framework in Frameworks */,
 				5023814517EBBCE400990C9B /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C64BD5631A25E85C002C4453 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +529,33 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C64BD55E1A25E839002C4453 /* yayoi */ = {
+			isa = PBXGroup;
+			children = (
+				C64BD55F1A25E839002C4453 /* Piece.cpp */,
+				C64BD5601A25E839002C4453 /* Piece.h */,
+			);
+			name = yayoi;
+			path = ../Classes/yayoi;
+			sourceTree = "<group>";
+		};
+		C64BD5671A25E85D002C4453 /* yayoi iOS Tests */ = {
+			isa = PBXGroup;
+			children = (
+				C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */,
+				C64BD5681A25E85D002C4453 /* Supporting Files */,
+			);
+			path = "yayoi iOS Tests";
+			sourceTree = "<group>";
+		};
+		C64BD5681A25E85D002C4453 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C64BD5691A25E85D002C4453 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
@@ -515,6 +564,7 @@
 				5023810617EBBCAC00990C9B /* ios */,
 				5023817117EBBE3400990C9B /* mac */,
 				F293BB7C15EB830F00256477 /* Classes */,
+				C64BD5671A25E85D002C4453 /* yayoi iOS Tests */,
 				F293B3CB15EB7BE500256477 /* Frameworks */,
 				F293B3C915EB7BE500256477 /* Products */,
 				F293BC4615EB859D00256477 /* Resources */,
@@ -526,6 +576,7 @@
 			children = (
 				F293B3C815EB7BE500256477 /* yayoi iOS.app */,
 				5023816B17EBBCE400990C9B /* yayoi Mac.app */,
+				C64BD5661A25E85C002C4453 /* yayoi iOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -559,15 +610,16 @@
 		F293BB7C15EB830F00256477 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				15427CE2198F237300DC375D /* lua_module_register.h */,
-				C00FD4891938512100C6382D /* runtime */,
-				C033B51A191B337200D06937 /* VisibleRect.cpp */,
-				C033B51B191B337200D06937 /* VisibleRect.h */,
-				C06C3794191A1D1E00617BED /* ConfigParser.cpp */,
-				C06C3795191A1D1E00617BED /* ConfigParser.h */,
-				C0619CD61896894800872C26 /* Runtime_ios-mac.mm */,
 				F293BB7E15EB831F00256477 /* AppDelegate.cpp */,
 				F293BB7F15EB831F00256477 /* AppDelegate.h */,
+				C06C3794191A1D1E00617BED /* ConfigParser.cpp */,
+				C06C3795191A1D1E00617BED /* ConfigParser.h */,
+				15427CE2198F237300DC375D /* lua_module_register.h */,
+				C00FD4891938512100C6382D /* runtime */,
+				C0619CD61896894800872C26 /* Runtime_ios-mac.mm */,
+				C033B51A191B337200D06937 /* VisibleRect.cpp */,
+				C033B51B191B337200D06937 /* VisibleRect.h */,
+				C64BD55E1A25E839002C4453 /* yayoi */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -606,6 +658,24 @@
 			productReference = 5023816B17EBBCE400990C9B /* yayoi Mac.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C64BD5651A25E85C002C4453 /* yayoi iOS Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C64BD56E1A25E85D002C4453 /* Build configuration list for PBXNativeTarget "yayoi iOS Tests" */;
+			buildPhases = (
+				C64BD5621A25E85C002C4453 /* Sources */,
+				C64BD5631A25E85C002C4453 /* Frameworks */,
+				C64BD5641A25E85C002C4453 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C64BD56D1A25E85D002C4453 /* PBXTargetDependency */,
+			);
+			name = "yayoi iOS Tests";
+			productName = "yayoi iOS Tests";
+			productReference = C64BD5661A25E85C002C4453 /* yayoi iOS Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F293B3C715EB7BE500256477 /* yayoi iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F293B6C415EB7BEA00256477 /* Build configuration list for PBXNativeTarget "yayoi iOS" */;
@@ -633,6 +703,10 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				TargetAttributes = {
+					C64BD5651A25E85C002C4453 = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = F293B3C715EB7BE500256477;
+					};
 					F293B3C715EB7BE500256477 = {
 						DevelopmentTeam = ZCSDM2RHP9;
 					};
@@ -662,6 +736,7 @@
 			targets = (
 				F293B3C715EB7BE500256477 /* yayoi iOS */,
 				5023812617EBBCE400990C9B /* yayoi Mac */,
+				C64BD5651A25E85C002C4453 /* yayoi iOS Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -707,6 +782,13 @@
 				F405C6C919ED14AA005AD31C /* MainMenu.xib in Resources */,
 				5023817617EBBE3400990C9B /* Icon.icns in Resources */,
 				C05D1C131923449100B808A4 /* config.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C64BD5641A25E85C002C4453 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -775,6 +857,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C64BD5621A25E85C002C4453 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C64BD5711A25E8F8002C4453 /* Piece.cpp in Sources */,
+				C64BD56B1A25E85D002C4453 /* yayoi_iOS_Tests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F293B3C415EB7BE500256477 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -795,6 +886,7 @@
 				3EB515641952865D006966AA /* repeated_field.cc in Sources */,
 				C00FD4941938512100C6382D /* PlayDisable_png.cpp in Sources */,
 				C00FD49C1938512100C6382D /* Shine_png.cpp in Sources */,
+				C64BD5611A25E839002C4453 /* Piece.cpp in Sources */,
 				3EB5156E1952865D006966AA /* wire_format_lite.cc in Sources */,
 				3EB515581952865D006966AA /* extension_set.cc in Sources */,
 				5023812417EBBCAC00990C9B /* main.m in Sources */,
@@ -831,6 +923,11 @@
 			isa = PBXTargetDependency;
 			name = "cocos2dx Mac";
 			targetProxy = C0A2F04018975FF80072A7AB /* PBXContainerItemProxy */;
+		};
+		C64BD56D1A25E85D002C4453 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F293B3C715EB7BE500256477 /* yayoi iOS */;
+			targetProxy = C64BD56C1A25E85D002C4453 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -903,6 +1000,89 @@
 				);
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../cocos2d-x/cocos/platform/mac $(SRCROOT)/../../cocos2d-x/external/glfw3/include/mac";
+			};
+			name = Release;
+		};
+		C64BD56F1A25E85D002C4453 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "yayoi iOS Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/yayoi iOS.app/yayoi iOS";
+			};
+			name = Debug;
+		};
+		C64BD5701A25E85D002C4453 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "yayoi iOS Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/yayoi iOS.app/yayoi iOS";
 			};
 			name = Release;
 		};
@@ -1009,6 +1189,15 @@
 			buildConfigurations = (
 				5023816917EBBCE400990C9B /* Debug */,
 				5023816A17EBBCE400990C9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C64BD56E1A25E85D002C4453 /* Build configuration list for PBXNativeTarget "yayoi iOS Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C64BD56F1A25E85D002C4453 /* Debug */,
+				C64BD5701A25E85D002C4453 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
