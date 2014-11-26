@@ -20,16 +20,15 @@ local function reverse(corner)
     return corner == "red" and "blue" or "red"
 end
 
-function GameLayer:ctor(ws, matchId, corner, form, seed)
-    self.ws = ws
-    self.matchId = matchId
-    self.corner = corner
+function GameLayer:ctor(ctx)
+    self.ctx = ctx
     self.turn = -1
     self.redDeck = {}
     self.blueDeck = {}
     self.canTouch = true
-    randomSeed(seed)
-    ws:registerScriptHandler(_.curry(self.onMessage, self), cc.WEBSOCKET_MESSAGE)
+    ctx:on("turn", _.curry(self.onTurn, self))
+    local corner = ctx:getCorner()
+    local form = ctx:getForm()
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
@@ -99,7 +98,7 @@ function GameLayer:initChips(turn, corner)
 end
 
 function GameLayer:idx2tilePos(i, j)
-    if self.corner == "blue" then
+    if self.ctx:getCorner() == "blue" then
         j = COL - j + 1
     end
     local x = self.visibleSize.width / 2 + (j - (COL / 2 + 0.5)) * TILE_WIDTH
@@ -162,66 +161,44 @@ function GameLayer:onTouchEnded(touch, event)
     end)
     if player then
         self.canTouch = false
-        self:putAction(player.id .. self.holdChip.idx)
+        self.ctx:act(player.id, self.holdChip.idx)
     end
     self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     self.holdChip = nil
 end
 
-function GameLayer:putAction(act)
-    local xhr = cc.XMLHttpRequest:new()
-    xhr.responseType = cc.XMLHTTPREQUEST_RESPONSE_JSON
-    xhr:setRequestHeader("X-Parse-Application-Id", "so6Tb3E5JowUXObTBdnRJaBWXf8ZQZjAslBlmdoE")
-    xhr:setRequestHeader("X-Parse-REST-API-Key", "rkfvd1LPNsIvYV40EfWKZXnYwKrXBDHLJpFj6tj6")
-    xhr:setRequestHeader("Content-Type", "application/json")
-    xhr:open("PUT", "https://api.parse.com/1/classes/Match/" .. self.matchId)
-    xhr:registerScriptHandler(function()
-        if xhr.readyState == 4 and (xhr.status >= 200 and xhr.status < 207) then
-            --print(xhr.response)
-            print("ok")
-        else
-            print("xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status)
-        end
-    end)
-    xhr:send(json.encode({acts = {__op = "Add", objects = {act}}}))
-end
-
-function GameLayer:onMessage(msg)
-    msg = json.decode(msg)
-    if msg.event == "turn" then
-        local data = json.decode(msg.data)
-        local redIdx = 1
-        local blueIdx = 1
-        local func = function()end
-        func = function(i)
-            if i > #data then
-                if self.corner == "red" then
-                    self:drawChip(redIdx, self.myChipsLayer, -1, "red")
-                    self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
-                else
-                    self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
-                    self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
-                end
-                self.canTouch = true
+function GameLayer:onTurn(data)
+    local redIdx = 1
+    local blueIdx = 1
+    local func = function()end
+    func = function(i)
+        if i > #data then
+            if self.ctx:getCorner() == "red" then
+                self:drawChip(redIdx, self.myChipsLayer, -1, "red")
+                self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
             else
-                local e = data[i]
-                local actor = tonumber(e:sub(1, 1))
-                local action = tonumber(e:sub(2, 2))
-                local eq = function(e) return e.id == actor end
-                local target = _.detect(self.friendsLayer:getChildren(), eq)
-                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-                local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
-                local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
-                self:action(target, chip, _.curry(func, i + 1))
-                if actor <= 3 then
-                    redIdx = action
-                else
-                    blueIdx = action
-                end
+                self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
+                self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
+            end
+            self.canTouch = true
+        else
+            local e = data[i]
+            local actor = tonumber(e:sub(1, 1))
+            local action = tonumber(e:sub(2, 2))
+            local eq = function(e) return e.id == actor end
+            local target = _.detect(self.friendsLayer:getChildren(), eq)
+            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+            local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
+            local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
+            self:action(target, chip, _.curry(func, i + 1))
+            if actor <= 3 then
+                redIdx = action
+            else
+                blueIdx = action
             end
         end
-        func(1)
     end
+    func(1)
 end
 
 function GameLayer:action(player, chip, callback)

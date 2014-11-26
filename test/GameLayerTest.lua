@@ -28,12 +28,19 @@ local function main()
     director:setDisplayStats(true)
 
     director:getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
-    
-    --create scene 
-    local layer = require("GameLayer").new({registerScriptHandler = function(a,b)end}, "hoge", "red", {red = {1, 6, 11}, blue = {20, 15, 10}}, 0)
+
+    local ctx = {
+        on = function(self, event, callback) print("ctx.on", event) end,
+        getCorner = function(self) return "red" end,
+        getForm = function(self) return {red = {1, 6, 11}, blue = {20, 15, 10}} end,
+        act = function(self, playerID, chipID) print("ctx.act", playerID, chipID) end
+    }
+
+    --create scene
+    local layer = require("GameLayer").new(ctx)
     local scene = cc.Scene:create()
     scene:addChild(layer)
-    
+
     if director:getRunningScene() then
         director:replaceScene(scene)
     else
