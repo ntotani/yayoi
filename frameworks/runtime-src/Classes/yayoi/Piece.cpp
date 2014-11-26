@@ -8,10 +8,11 @@ namespace yayoi {
     :_job(FIGHTER)
     ,_color(SUN)
     ,_baseStatus({{POWER, 0}, {ARMOR, 0}, {RESIST, 0}})
-    ,_individualStatus({{POWER, 0}, {ARMOR, 0}, {RESIST, 0}}){
+    ,_individualStatus({{POWER, 0}, {ARMOR, 0}, {RESIST, 0}})
+    ,_hp(MAX_HP) {
     }
 
-    Piece::Piece(Job job, Color color, const map<Param, int> &baseStatus, const map<Param, int> &individualStatus) {
+    Piece::Piece(Job job, Color color, const map<Param, int> &baseStatus, const map<Param, int> &individualStatus):_hp(MAX_HP) {
         _job = job;
         _color = color;
         _baseStatus = baseStatus;
@@ -21,8 +22,10 @@ namespace yayoi {
     Piece::~Piece() {
     }
 
-    int Piece::getStatus(Param param) const {
-        return _baseStatus.at(param) + _individualStatus.at(param) * 2;
+    int Piece::applyDamage(int damage) {
+        damage = min(damage, _hp);
+        _hp -= damage;
+        return damage;
     }
 
 }
