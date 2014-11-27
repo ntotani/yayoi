@@ -2,6 +2,7 @@
 #define __yayoi__Piece__
 
 #include <map>
+#include "Type.h"
 
 namespace yayoi {
 
@@ -15,7 +16,7 @@ namespace yayoi {
         const static int MAX_HP = 100;
 
         Piece();
-        Piece(Job job, Color color, const std::map<Param, int> &baseStatus, const std::map<Param, int> &individualStatus);
+        Piece(Job job, Color color, const std::map<Param, int> &baseStatus, const std::map<Param, int> &individualStatus, Team team, int row, int col);
         ~Piece();
         Job getJob() const { return _job; };
         Color getColor() const { return _color; };
@@ -25,6 +26,8 @@ namespace yayoi {
             return _baseStatus.at(param) + _individualStatus.at(param) * 2;
         };
         int getHp() const { return _hp; };
+        Team getTeam() const { return _team; };
+        std::pair<int, int> getPosition() const { return _position; };
         int applyDamage(int damage);
 
     private:
@@ -33,6 +36,8 @@ namespace yayoi {
         std::map<Param, int> _baseStatus;
         std::map<Param, int> _individualStatus;
         int _hp;
+        Team _team;
+        std::pair<int, int> _position;
     };
 
 }

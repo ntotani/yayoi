@@ -1,0 +1,44 @@
+#include "Match.h"
+#include <algorithm>
+
+using namespace std;
+
+namespace yayoi {
+
+    Match::Match()
+    :_rnd(0)
+    ,_row(1)
+    ,_col(1)
+    ,_pieces({})
+    ,_decks({{RED, {}}, {BLUE, {}}}) {
+    }
+
+    Match::Match(int seed, vector<Piece*> pieces, int row, int col, const map<Chip, int> &freq)
+    :_rnd(seed)
+    ,_row(row)
+    ,_col(col)
+    ,_pieces(pieces)
+    ,_decks({{RED, {}}, {BLUE, {}}}) {
+        fillDeck(RED, freq);
+        fillDeck(BLUE, freq);
+    }
+
+    Match::~Match() {
+    }
+
+    void Match::fillDeck(Team team, const map<Chip, int> &freq) {
+        vector<pair<Chip, int>> chips;
+        for (auto e : freq) {
+            for (int i = 0; i < e.second; i++) {
+                chips.push_back({e.first, _rnd()});
+            }
+        }
+        sort(chips.begin(), chips.end(), [](const pair<Chip, int> &a, const pair<Chip, int> &b) {
+            return a.second < b.second;
+        });
+        for (auto e : chips) {
+            _decks.at(team).push_back(e.first);
+        }
+    }
+
+}

@@ -105,9 +105,12 @@
 		C07828FA18B4D72E00BD2287 /* SimulatorApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = C07828F718B4D72E00BD2287 /* SimulatorApp.mm */; };
 		C64BD5481A256251002C4453 /* test in Resources */ = {isa = PBXBuildFile; fileRef = C64BD5471A256251002C4453 /* test */; };
 		C64BD5611A25E839002C4453 /* Piece.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C64BD55F1A25E839002C4453 /* Piece.cpp */; };
-		C64BD56B1A25E85D002C4453 /* yayoi_iOS_Tests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */; };
+		C64BD56B1A25E85D002C4453 /* PieceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64BD56A1A25E85D002C4453 /* PieceTests.mm */; };
 		C64BD5711A25E8F8002C4453 /* Piece.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C64BD55F1A25E839002C4453 /* Piece.cpp */; };
 		C66505961A260C460049F29B /* lua_yayoi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C66505941A260C460049F29B /* lua_yayoi.cpp */; };
+		C66505991A26442F0049F29B /* Match.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C66505971A26442F0049F29B /* Match.cpp */; };
+		C665059A1A26442F0049F29B /* Match.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C66505971A26442F0049F29B /* Match.cpp */; };
+		C66505A11A26F1BA0049F29B /* MatchTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C66505A01A26F1BA0049F29B /* MatchTests.mm */; };
 		D6B061351803AC000077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061341803AC000077942B /* CoreMotion.framework */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -293,9 +296,13 @@
 		C64BD5601A25E839002C4453 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Piece.h; sourceTree = "<group>"; };
 		C64BD5661A25E85C002C4453 /* yayoi iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "yayoi iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C64BD5691A25E85D002C4453 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = yayoi_iOS_Tests.mm; sourceTree = "<group>"; };
+		C64BD56A1A25E85D002C4453 /* PieceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PieceTests.mm; sourceTree = "<group>"; };
 		C66505941A260C460049F29B /* lua_yayoi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_yayoi.cpp; path = ../Classes/lua_yayoi.cpp; sourceTree = "<group>"; };
 		C66505951A260C460049F29B /* lua_yayoi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lua_yayoi.hpp; path = ../Classes/lua_yayoi.hpp; sourceTree = "<group>"; };
+		C66505971A26442F0049F29B /* Match.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Match.cpp; sourceTree = "<group>"; };
+		C66505981A26442F0049F29B /* Match.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Match.h; sourceTree = "<group>"; };
+		C665059F1A26E9280049F29B /* Type.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Type.h; sourceTree = "<group>"; };
+		C66505A01A26F1BA0049F29B /* MatchTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MatchTests.mm; sourceTree = "<group>"; };
 		D6B061341803AC000077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		F293B3C815EB7BE500256477 /* yayoi iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "yayoi iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3CC15EB7BE500256477 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -535,8 +542,11 @@
 		C64BD55E1A25E839002C4453 /* yayoi */ = {
 			isa = PBXGroup;
 			children = (
+				C66505971A26442F0049F29B /* Match.cpp */,
+				C66505981A26442F0049F29B /* Match.h */,
 				C64BD55F1A25E839002C4453 /* Piece.cpp */,
 				C64BD5601A25E839002C4453 /* Piece.h */,
+				C665059F1A26E9280049F29B /* Type.h */,
 			);
 			name = yayoi;
 			path = ../Classes/yayoi;
@@ -545,7 +555,8 @@
 		C64BD5671A25E85D002C4453 /* yayoi iOS Tests */ = {
 			isa = PBXGroup;
 			children = (
-				C64BD56A1A25E85D002C4453 /* yayoi_iOS_Tests.mm */,
+				C66505A01A26F1BA0049F29B /* MatchTests.mm */,
+				C64BD56A1A25E85D002C4453 /* PieceTests.mm */,
 				C64BD5681A25E85D002C4453 /* Supporting Files */,
 			);
 			path = "yayoi iOS Tests";
@@ -867,7 +878,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C64BD5711A25E8F8002C4453 /* Piece.cpp in Sources */,
-				C64BD56B1A25E85D002C4453 /* yayoi_iOS_Tests.mm in Sources */,
+				C665059A1A26442F0049F29B /* Match.cpp in Sources */,
+				C64BD56B1A25E85D002C4453 /* PieceTests.mm in Sources */,
+				C66505A11A26F1BA0049F29B /* MatchTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,6 +889,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15AA9648199B6D4600725633 /* lua_debugger.c in Sources */,
+				C66505991A26442F0049F29B /* Match.cpp in Sources */,
 				3EB5156A1952865D006966AA /* once.cc in Sources */,
 				C00FD4981938512100C6382D /* Portrait_png.cpp in Sources */,
 				5023812517EBBCAC00990C9B /* RootViewController.mm in Sources */,
