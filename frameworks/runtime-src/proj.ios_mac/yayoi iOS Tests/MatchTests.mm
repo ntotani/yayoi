@@ -83,4 +83,16 @@ Piece* createPiece() {
     XCTAssertEqual(0, p->getPosition().second);
 }
 
+- (void)testApplyChip_punch {
+    auto from = createPiece();
+    auto to = createPiece();
+    to->applyChip({0, 1});
+    delete _match;
+    _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
+    _match->applyChip(RED, 0, from);
+    XCTAssertEqual(0, from->getPosition().first);
+    XCTAssertEqual(0, from->getPosition().second);
+    XCTAssertNotEqual(Piece::MAX_HP, to->getHp());
+}
+
 @end

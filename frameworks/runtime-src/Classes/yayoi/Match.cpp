@@ -60,11 +60,30 @@ namespace yayoi {
             auto dir = (*it).getDir();
             pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
             if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
-                target->applyChip(dir);
+                Piece *onTile = nullptr;
+                for (auto e : _pieces) {
+                    if (e->getPosition() == newPos) {
+                        onTile = e;
+                        break;
+                    }
+                }
+                if (onTile == nullptr) {
+                    target->applyChip(dir);
+                } else {
+                    onTile->applyDamage(calcDamage(target, onTile));
+                }
             }
         }
         deck.erase(it);
         deck.push_back(*it);
+    }
+
+    int Match::calcDamage(Piece *from, Piece *to) {
+        int attack = from->getStatus(Piece::POWER);
+        int block = to->getStatus(from->getJob() == Piece::FIGHTER ? Piece::ARMOR : Piece::RESIST);
+        int damage = 30 * attack / block;
+        damage *= from->getJob() == Piece::HEALER ? -1 : 1;
+        return damage;
     }
 
 }
