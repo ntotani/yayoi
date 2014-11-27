@@ -44,7 +44,7 @@ using namespace yayoi;
     _match->fillDeck(RED, {{Chip(0, 1), 1}, {Chip(2, 3), 1}});
     auto headChip = _match->getDeck(RED).front();
     auto p = Piece();
-    _match->applyChip(RED, 0, &p);
+    _match->applyChip(&p, 0);
     auto deck = _match->getDeck(RED);
     XCTAssertEqual(2, deck.size());
     XCTAssertNotEqual(headChip.getDir().first, deck.front().getDir().first);
@@ -59,7 +59,7 @@ Piece* createPiece() {
     auto p = createPiece();
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(RED, 0, p);
+    _match->applyChip(p, 0);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(1, p->getPosition().second);
 }
@@ -68,7 +68,7 @@ Piece* createPiece() {
     auto p = createPiece();
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, -1), 1}});
-    _match->applyChip(RED, 0, p);
+    _match->applyChip(p, 0);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(0, p->getPosition().second);
 }
@@ -78,7 +78,7 @@ Piece* createPiece() {
     p->applyDamage(100);
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(RED, 0, p);
+    _match->applyChip(p, 0);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(0, p->getPosition().second);
 }
@@ -89,7 +89,7 @@ Piece* createPiece() {
     to->applyChip({0, 1});
     delete _match;
     _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(RED, 0, from);
+    _match->applyChip(from, 0);
     XCTAssertEqual(0, from->getPosition().first);
     XCTAssertEqual(0, from->getPosition().second);
     XCTAssertNotEqual(Piece::MAX_HP, to->getHp());
