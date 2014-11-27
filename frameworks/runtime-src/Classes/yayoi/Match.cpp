@@ -55,11 +55,13 @@ namespace yayoi {
         for (int i = 0; i < idx; i++) {
             it++;
         }
-        auto pos = target->getPosition();
-        auto dir = (*it).getDir();
-        pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
-        if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
-            target->applyChip(dir);
+        if (target->getHp() > 0) {
+            auto pos = target->getPosition();
+            auto dir = (*it).getDir();
+            pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
+            if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
+                target->applyChip(dir);
+            }
         }
         deck.erase(it);
         deck.push_back(*it);
