@@ -41,4 +41,17 @@ namespace yayoi {
         }
     }
 
+    void Match::applyChip(Team team, int idx, Piece *target) {
+        if (target->getTeam() != team) {
+            return;
+        }
+        auto &deck = _decks.at(team);
+        auto it = deck.begin();
+        for (int i = 0; i < idx; i++) {
+            it++;
+        }
+        deck.erase(it);
+        deck.push_back(*it);
+    }
+
 }

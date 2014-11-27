@@ -29,6 +29,7 @@ namespace yayoi {
         const std::vector<Piece*>& getPieces() const { return _pieces; };
         const std::list<Chip>& getDeck(Team team) const { return _decks.at(team); };
         void fillDeck(Team team, const std::map<Chip, int> &freq);
+        void applyChip(Team team, int idx, Piece* target);
 
     private:
         std::mt19937 _rnd;
