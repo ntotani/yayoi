@@ -24,6 +24,11 @@ namespace yayoi {
     }
 
     Match::~Match() {
+        for (auto e : _pieces) {
+            if (e) {
+                delete e;
+            }
+        }
     }
 
     void Match::fillDeck(Team team, const map<Chip, int> &freq) {
@@ -49,6 +54,12 @@ namespace yayoi {
         auto it = deck.begin();
         for (int i = 0; i < idx; i++) {
             it++;
+        }
+        auto pos = target->getPosition();
+        auto dir = (*it).getDir();
+        pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
+        if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
+            target->applyChip(dir);
         }
         deck.erase(it);
         deck.push_back(*it);

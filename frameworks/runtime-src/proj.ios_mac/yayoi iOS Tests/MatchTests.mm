@@ -40,7 +40,7 @@ using namespace yayoi;
     XCTAssertEqual(3, deck.front().getDir().second);
 }
 
-- (void)testApplyChip { // 使ったチップはデッキの最後尾に戻る
+- (void)testApplyChip_loop { // 使ったチップはデッキの最後尾に戻る
     _match->fillDeck(RED, {{Chip(0, 1), 1}, {Chip(2, 3), 1}});
     auto headChip = _match->getDeck(RED).front();
     auto p = Piece();
@@ -49,6 +49,22 @@ using namespace yayoi;
     XCTAssertEqual(2, deck.size());
     XCTAssertNotEqual(headChip.getDir().first, deck.front().getDir().first);
     XCTAssertNotEqual(headChip.getDir().second, deck.front().getDir().second);
+}
+
+- (void)testApplyChip_gain {
+    auto p = new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0);
+    _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
+    _match->applyChip(RED, 0, p);
+    XCTAssertEqual(0, p->getPosition().first);
+    XCTAssertEqual(1, p->getPosition().second);
+}
+
+- (void)testApplyChip_fail {
+    auto p = new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0);
+    _match = new Match(0, {p}, 5, 5, {{Chip(0, -1), 1}});
+    _match->applyChip(RED, 0, p);
+    XCTAssertEqual(0, p->getPosition().first);
+    XCTAssertEqual(0, p->getPosition().second);
 }
 
 @end

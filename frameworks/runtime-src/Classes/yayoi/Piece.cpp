@@ -27,6 +27,11 @@ namespace yayoi {
     Piece::~Piece() {
     }
 
+    void Piece::applyChip(const pair<int, int> &chip) {
+        _position.first += chip.first;
+        _position.second += chip.second;
+    }
+
     int Piece::applyDamage(int damage) {
         damage = min(damage, _hp);
         _hp -= damage;

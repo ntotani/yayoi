@@ -27,7 +27,8 @@ namespace yayoi {
         };
         int getHp() const { return _hp; };
         Team getTeam() const { return _team; };
-        std::pair<int, int> getPosition() const { return _position; };
+        const std::pair<int, int>& getPosition() const { return _position; };
+        void applyChip(const std::pair<int, int>& chip);
         int applyDamage(int damage);
 
     private:
