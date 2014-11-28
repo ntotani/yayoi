@@ -10,7 +10,9 @@ namespace yayoi {
     ,_row(1)
     ,_col(1)
     ,_pieces({})
-    ,_decks({{RED, {}}, {BLUE, {}}}) {
+    ,_decks({{RED, {}}, {BLUE, {}}})
+    ,_castle({}) {
+        setCastle();
     }
 
     Match::Match(int seed, vector<Piece*> pieces, int row, int col, const map<Chip, int> &freq)
@@ -18,9 +20,19 @@ namespace yayoi {
     ,_row(row)
     ,_col(col)
     ,_pieces(pieces)
-    ,_decks({{RED, {}}, {BLUE, {}}}) {
+    ,_decks({{RED, {}}, {BLUE, {}}})
+    ,_castle({}) {
         fillDeck(RED, freq);
         fillDeck(BLUE, freq);
+        setCastle();
+    }
+
+    void Match::setCastle() {
+        for (auto e : _pieces) {
+            if (e->isKing()) {
+                _castle[e->getTeam()] = e->getPosition();
+            }
+        }
     }
 
     Match::~Match() {
@@ -88,10 +100,14 @@ namespace yayoi {
 
     Team Match::wonTeam() const {
         for (auto e : _pieces) {
-            if (e->isKing() && e->getHp() <= 0) {
-                if (e->getTeam() == RED) {
+            if (e->isKing()) {
+                if (e->getHp() == 0) {
+                    return e->getTeam() == RED ? BLUE : RED;
+                }
+                if (e->getPosition() == _castle.at(RED) && e->getTeam() == BLUE) {
                     return BLUE;
-                } else {
+                }
+                if (e->getPosition() == _castle.at(BLUE) && e->getTeam() == RED) {
                     return RED;
                 }
             }

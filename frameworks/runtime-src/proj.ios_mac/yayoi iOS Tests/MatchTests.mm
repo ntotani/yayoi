@@ -59,6 +59,10 @@ Piece* createKing() {
     return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, true);
 }
 
+Piece* createBlue() {
+    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, BLUE, 0, 1, true);
+}
+
 - (void)testApplyChip_gain {
     auto p = createPiece();
     delete _match;
@@ -117,11 +121,24 @@ Piece* createKing() {
     auto to = createKing();
     to->applyChip({0, 1});
     to->applyDamage(99);
+    auto blue = createBlue();
+    blue->applyChip({0, 1});
     delete _match;
-    _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
+    _match = new Match(0, {from, to, blue}, 5, 5, {{Chip(0, 1), 1}});
     XCTAssertEqual(UNKNOWN, _match->wonTeam());
     _match->applyChip(from, 0);
     XCTAssertEqual(BLUE, _match->wonTeam());
+}
+
+- (void)testApplyChip_castle { // スタート位置に行けたら終了
+    auto red = createKing();
+    auto blue = createBlue();
+    delete _match;
+    _match = new Match(0, {red, blue}, 5, 5, {{Chip(0, 1), 1}});
+    blue->applyChip({1, 0});
+    XCTAssertEqual(UNKNOWN, _match->wonTeam());
+    _match->applyChip(red, 0);
+    XCTAssertEqual(RED, _match->wonTeam());
 }
 
 @end

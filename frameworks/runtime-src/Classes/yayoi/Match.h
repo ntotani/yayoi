@@ -39,6 +39,9 @@ namespace yayoi {
         int _col;
         std::vector<Piece*> _pieces;
         std::map<Team, std::list<Chip>> _decks;
+        std::map<Team, std::pair<int, int>> _castle;
+
+        void setCastle();
     };
 
 }
