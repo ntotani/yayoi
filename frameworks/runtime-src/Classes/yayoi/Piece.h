@@ -16,7 +16,7 @@ namespace yayoi {
         const static int MAX_HP = 100;
 
         Piece();
-        Piece(Job job, Color color, const std::map<Param, int> &baseStatus, const std::map<Param, int> &individualStatus, Team team, int row, int col);
+        Piece(Job job, Color color, const std::map<Param, int> &baseStatus, const std::map<Param, int> &individualStatus, Team team, int row, int col, bool king);
         ~Piece();
         Job getJob() const { return _job; };
         Color getColor() const { return _color; };
@@ -28,6 +28,7 @@ namespace yayoi {
         int getHp() const { return _hp; };
         Team getTeam() const { return _team; };
         const std::pair<int, int>& getPosition() const { return _position; };
+        bool isKing() const { return _king; };
         void applyChip(const std::pair<int, int>& chip);
         int applyDamage(int damage);
 
@@ -39,6 +40,7 @@ namespace yayoi {
         int _hp;
         Team _team;
         std::pair<int, int> _position;
+        bool _king;
     };
 
 }

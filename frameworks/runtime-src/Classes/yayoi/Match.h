@@ -31,6 +31,7 @@ namespace yayoi {
         void fillDeck(Team team, const std::map<Chip, int> &freq);
         void applyChip(Piece* target, int idx);
         static int calcDamage(Piece* from, Piece* to);
+        Team wonTeam() const;
 
     private:
         std::mt19937 _rnd;

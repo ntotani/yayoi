@@ -11,17 +11,19 @@ namespace yayoi {
     ,_individualStatus({{POWER, 0}, {ARMOR, 0}, {RESIST, 0}})
     ,_hp(MAX_HP)
     ,_team(RED)
-    ,_position({0, 0}) {
+    ,_position({0, 0})
+    ,_king(false) {
     }
 
-    Piece::Piece(Job job, Color color, const map<Param, int> &baseStatus, const map<Param, int> &individualStatus, Team team, int row, int col)
+    Piece::Piece(Job job, Color color, const map<Param, int> &baseStatus, const map<Param, int> &individualStatus, Team team, int row, int col, bool king)
     :_job(job)
     ,_color(color)
     ,_baseStatus(baseStatus)
     ,_individualStatus(individualStatus)
     ,_hp(MAX_HP)
     ,_team(team)
-    ,_position({row, col}) {
+    ,_position({row, col})
+    ,_king(king) {
     }
 
     Piece::~Piece() {

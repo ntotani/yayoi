@@ -2,7 +2,7 @@
 #define yayoi_Type_h
 
 namespace yayoi {
-    enum Team { RED, BLUE };
+    enum Team { RED, BLUE, UNKNOWN };
 }
 
 #endif

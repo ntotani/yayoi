@@ -86,4 +86,17 @@ namespace yayoi {
         return damage;
     }
 
+    Team Match::wonTeam() const {
+        for (auto e : _pieces) {
+            if (e->isKing() && e->getHp() <= 0) {
+                if (e->getTeam() == RED) {
+                    return BLUE;
+                } else {
+                    return RED;
+                }
+            }
+        }
+        return UNKNOWN;
+    }
+
 }

@@ -52,7 +52,11 @@ using namespace yayoi;
 }
 
 Piece* createPiece() {
-    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0);
+    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, false);
+}
+
+Piece* createKing() {
+    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, true);
 }
 
 - (void)testApplyChip_gain {
@@ -79,8 +83,8 @@ Piece* createPiece() {
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
     _match->applyChip(p, 0);
-    XCTAssertEqual(0, p->getPosition().first);
-    XCTAssertEqual(0, p->getPosition().second);
+    XCTAssertEqual(-1, p->getPosition().first);
+    XCTAssertEqual(-1, p->getPosition().second);
 }
 
 - (void)testApplyChip_punch {
@@ -106,6 +110,18 @@ Piece* createPiece() {
     XCTAssertEqual(0, from->getPosition().first);
     XCTAssertEqual(1, from->getPosition().second);
     XCTAssertEqual(0, to->getHp());
+}
+
+- (void)testApplyChip_king { // キング倒したら終了
+    auto from = createPiece();
+    auto to = createKing();
+    to->applyChip({0, 1});
+    to->applyDamage(99);
+    delete _match;
+    _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
+    XCTAssertEqual(UNKNOWN, _match->wonTeam());
+    _match->applyChip(from, 0);
+    XCTAssertEqual(BLUE, _match->wonTeam());
 }
 
 @end
