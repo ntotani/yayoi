@@ -68,6 +68,9 @@ namespace yayoi {
                     target->applyChip(dir);
                 } else {
                     onTile->applyDamage(calcDamage(target, onTile));
+                    if (onTile->getHp() <= 0) {
+                        target->applyChip(dir);
+                    }
                 }
             }
         }

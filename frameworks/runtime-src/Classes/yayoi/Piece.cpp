@@ -35,6 +35,9 @@ namespace yayoi {
     int Piece::applyDamage(int damage) {
         damage = min(damage, _hp);
         _hp -= damage;
+        if (_hp <= 0) {
+            _position = {-1, -1};
+        }
         return damage;
     }
 

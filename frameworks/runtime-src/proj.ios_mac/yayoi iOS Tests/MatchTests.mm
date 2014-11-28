@@ -95,4 +95,17 @@ Piece* createPiece() {
     XCTAssertNotEqual(Piece::MAX_HP, to->getHp());
 }
 
+- (void)testApplyChip_kill { // HP0になったら死亡
+    auto from = createPiece();
+    auto to = createPiece();
+    to->applyChip({0, 1});
+    to->applyDamage(99);
+    delete _match;
+    _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
+    _match->applyChip(from, 0);
+    XCTAssertEqual(0, from->getPosition().first);
+    XCTAssertEqual(1, from->getPosition().second);
+    XCTAssertEqual(0, to->getHp());
+}
+
 @end
