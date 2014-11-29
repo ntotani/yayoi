@@ -26,12 +26,11 @@ function GameLayer:ctor(ctx)
     self.canTouch = true
     ctx:on("turn", _.curry(self.onTurn, self))
     local corner = ctx:getCorner()
-    local form = ctx:getForm()
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
-    self.tiles = _.range(1, ctx:getMatch():getRow()):map(function(i)
-        return _.range(1, ctx:getMatch():getCol()):map(function(j)
+    self.tiles = _.range(0, ctx:getMatch():getRow() - 1):map(function(i)
+        return _.range(0, ctx:getMatch():getCol() - 1):map(function(j)
             local tile = cc.Sprite:create("img/tile.png")
             tile:setPosition(self:idx2tilePos(i, j))
             self:addChild(tile)
@@ -39,9 +38,9 @@ function GameLayer:ctor(ctx)
         end)
     end)
 
-    self.friendsLayer = self:initHeros(-1, form, corner)
+    self.friendsLayer = self:initHeros(-1, corner)
     self:addChild(self.friendsLayer)
-    self.enemiesLayer = self:initHeros(1, form, reverse(corner))
+    self.enemiesLayer = self:initHeros(1, reverse(corner))
     self:addChild(self.enemiesLayer)
     if corner == "red" then
         self.myChipsLayer = self:initChips(-1, "red")
@@ -61,15 +60,18 @@ function GameLayer:ctor(ctx)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(listener, self)
 end
 
-function GameLayer:initHeros(dir, form, corner)
+function GameLayer:initHeros(dir, corner)
     local layer = cc.Layer:create()
     local jobs = {"Player", "Witch", "Tank"}
     local id = (corner == "blue" and 4 or 1)
-    _.each(form[corner], function(i)
+    local pieces = self.ctx:getMatch():getPieces()
+    local myTeam = corner == "red" and 0 or 1
+    _.each(pieces, function(e)
+        if e:getTeam() ~= myTeam then return end
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
-        local row = math.ceil(i / self.ctx:getMatch():getCol())
-        local col = (i - 1) % self.ctx:getMatch():getCol() + 1
+        local row = e:getPosition().first
+        local col = e:getPosition().second
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
         player.tile = {i = row, j = col}
@@ -99,8 +101,8 @@ function GameLayer:idx2tilePos(i, j)
     if self.ctx:getCorner() == "blue" then
         j = self.ctx:getMatch():getCol() - j + 1
     end
-    local x = self.visibleSize.width / 2 + (j - (self.ctx:getMatch():getCol() / 2 + 0.5)) * TILE_WIDTH
-    local y = self.visibleSize.height / 2 + (i - (self.ctx:getMatch():getRow() / 2 + 0.5)) * TILE_WIDTH
+    local x = self.visibleSize.width / 2 + (j - (self.ctx:getMatch():getCol() / 2 - 0.5)) * TILE_WIDTH
+    local y = self.visibleSize.height / 2 + (i - (self.ctx:getMatch():getRow() / 2 - 0.5)) * TILE_WIDTH
     return cc.p(x, y)
 end
 

@@ -42,7 +42,6 @@ local function main()
     local ctx = {
         on = function(self, event, callback) print("ctx.on", event) end,
         getCorner = function(self) return "red" end,
-        getForm = function(self) return {red = {1, 6, 11}, blue = {20, 15, 10}} end,
         act = function(self, playerID, chipID) print("ctx.act", playerID, chipID) end,
         getMatch = function(self) return match end
     }
