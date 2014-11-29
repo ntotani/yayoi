@@ -389,4 +389,106 @@ void ccvector_float_to_luaval(lua_State* L, const std::vector<float>& inValue);
 void ccvector_ushort_to_luaval(lua_State* L, const std::vector<unsigned short>& inValue);
 void quaternion_to_luaval(lua_State* L,const cocos2d::Quaternion& inValue);
 
+extern bool luaval_to_ipair(lua_State* L,int lo,std::pair<int, int>* outValue, const char* funcName = "");
+extern void ipair_to_luaval(lua_State* L,const std::pair<int, int>& vec2);
+template <class T>
+bool luaval_to_std_vector_usertype(lua_State* L, int lo, std::vector<T>* ret, const char* funcName = "")
+{
+    if (nullptr == L || nullptr == ret || lua_gettop(L) < lo)
+        return false;
+    
+    tolua_Error tolua_err;
+    bool ok = true;
+    if (!tolua_istable(L, lo, 0, &tolua_err))
+    {
+#if COCOS2D_DEBUG >=1
+        luaval_to_native_err(L,"#ferror:",&tolua_err,funcName);
+#endif
+        ok = false;
+    }
+    
+    if (ok)
+    {
+        size_t len = lua_objlen(L, lo);
+        for (size_t i = 0; i < len; i++)
+        {
+            lua_pushnumber(L, i + 1);
+            lua_gettable(L,lo);
+            ret->push_back(static_cast<T>(tolua_tousertype(L, -1, 0)));
+            lua_pop(L, 1);
+        }
+    }
+    
+    return ok;
+}
+
+template<class T>
+void ccvector_usertype_to_luaval(lua_State* L, const std::vector<T>& inValue, const char* name) {
+    if (nullptr == L)
+        return;
+    
+    lua_newtable(L);
+    
+    int index = 1;
+    for (auto value : inValue)
+    {
+        lua_pushnumber(L, (lua_Number)index);
+        tolua_pushusertype(L, value, name);
+        lua_rawset(L, -3);
+        ++index;
+    }
+}
+
+template<class T>
+void cclist_usertype_to_luaval(lua_State* L, const std::list<T>& inValue, const char* name) {
+    if (nullptr == L)
+        return;
+    
+    lua_newtable(L);
+    
+    int index = 1;
+    for (auto value : inValue)
+    {
+        lua_pushnumber(L, (lua_Number)index);
+        tolua_pushusertype(L, &value, name);
+        lua_rawset(L, -3);
+        ++index;
+    }
+}
+
+template<class T>
+bool luaval_to_usertypemap(lua_State* L, int lo, std::map<T, int>* ret, const char* typeName)
+{
+    if ( nullptr == L || nullptr == ret)
+        return false;
+    
+    tolua_Error tolua_err;
+    bool ok = true;
+    if (!tolua_istable(L, lo, 0, &tolua_err))
+    {
+#if COCOS2D_DEBUG >=1
+        luaval_to_native_err(L,"#ferror:",&tolua_err,"");
+#endif
+        ok = false;
+    }
+    
+    if (ok)
+    {
+        lua_pushnil(L);                                             /* first key L: lotable ..... nil */
+        while ( 0 != lua_next(L, lo ) )                             /* L: lotable ..... key value */
+        {
+            if (!luaval_is_usertype(L, -2, typeName, 0))
+            {
+                lua_pop(L, 1);                                      /* removes 'value'; keep 'key' for next iteration*/
+                continue;
+            }
+            T* key = static_cast<T*>(tolua_tousertype(L, -2, nullptr));
+            ret->insert({*key, tolua_tonumber(L, -1, 0)});
+            lua_pop(L, 1);                                          /* L: lotable ..... key */
+        }
+    }
+    
+    return ok;
+}
+
 #endif //__COCOS2DX_SCRIPTING_LUA_COCOS2DXSUPPORT_LUABAISCCONVERSIONS_H__

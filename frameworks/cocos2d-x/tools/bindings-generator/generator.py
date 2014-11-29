@@ -327,6 +327,7 @@ class NativeType(object):
         if self.is_object:
             if not NativeType.dict_has_key_re(from_native_dict, keys):
                 keys.append("object")
+                print self.name
         elif self.is_enum:
             keys.append("int")
 

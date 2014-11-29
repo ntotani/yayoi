@@ -75,6 +75,10 @@ conversions:
     "MeshVertexAttrib": "ok &= luaval_to_mesh_vertex_attrib(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "@vector<float.*>": "ok &= luaval_to_std_vector_float(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "@vector<unsigned short.*>": "ok &= luaval_to_std_vector_ushort(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "pair<int, int>": "ok &= luaval_to_ipair(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "map<yayoi::Piece::Param, int, std::less<yayoi::Piece::Param>, std::allocator<std::pair<const yayoi::Piece::Param, int> > >": "cocos2d::ValueMapIntKey vmik${out_value};ok &= luaval_to_ccvaluemapintkey(tolua_S, ${arg_idx}, &vmik${out_value}, \"${lua_namespaced_class_name}:${func_name}\");for (auto e : vmik${out_value}) { ${out_value}[static_cast<yayoi::Piece::Param>(e.first)] = e.second.asInt(); }"
+    "vector<yayoi::Piece *, std::allocator<yayoi::Piece *> >": "ok &= luaval_to_std_vector_usertype(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "map<yayoi::Chip, int, std::less<yayoi::Chip>, std::allocator<std::pair<const yayoi::Chip, int> > >": "ok &= luaval_to_usertypemap(tolua_S, ${arg_idx}, &${out_value}, \"yayoi.Chip\")"
 
     object: "ok &= luaval_to_object<${arg.to_string($generator).replace(\"*\", \"\")}>(tolua_S, ${arg_idx}, \"${scriptname}\",&${out_value})"
   from_native:
@@ -125,6 +129,10 @@ conversions:
     "MeshVertexAttrib": "mesh_vertex_attrib_to_luaval(tolua_S, ${in_value})"
     "@vector<float.*>": "ccvector_float_to_luaval(tolua_S, ${in_value})"
     "@vector<unsigned short.*>": "ccvector_ushort_to_luaval(tolua_S, ${in_value})"
+    "pair<int, int>": "ipair_to_luaval(tolua_S, ${in_value})"
+    "std::map<yayoi::Chip, int, std::less<yayoi::Chip>, std::allocator<std::pair<const yayoi::Chip, int> > >": "ccvaluemapintkey_to_luaval(tolua_S, ${in_value})"
+    "list<yayoi::Chip, std::allocator<yayoi::Chip> >": "cclist_usertype_to_luaval(tolua_S, ${in_value}, \"yayoi.Chip\")"
+    "vector<yayoi::Piece *, std::allocator<yayoi::Piece *> >": "ccvector_usertype_to_luaval(tolua_S, ${in_value}, \"yayoi.Piece\")"
 
     object: "object_to_luaval<${ntype.replace(\"*\", \"\").replace(\"const \", \"\")}>(tolua_S, \"${scriptname}\",(${ntype.replace(\"const \", \"\")})${in_value})"
 

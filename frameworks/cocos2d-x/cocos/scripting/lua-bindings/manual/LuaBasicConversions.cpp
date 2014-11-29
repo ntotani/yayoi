@@ -3001,3 +3001,49 @@ void quaternion_to_luaval(lua_State* L,const cocos2d::Quaternion& inValue)
     lua_pushnumber(L, (lua_Number) inValue.w);             /* L: table key value*/
     lua_rawset(L, -3);
 }
+
+bool luaval_to_ipair(lua_State* L,int lo,std::pair<int, int>* outValue, const char* funcName)
+{
+    if (nullptr == L || nullptr == outValue)
+        return false;
+    
+    bool ok = true;
+    
+    tolua_Error tolua_err;
+    if (!tolua_istable(L, lo, 0, &tolua_err) )
+    {
+#if COCOS2D_DEBUG >=1
+        luaval_to_native_err(L,"#ferror:",&tolua_err,funcName);
+#endif
+        ok = false;
+    }
+    
+    
+    if (ok)
+    {
+        lua_pushstring(L, "first");
+        lua_gettable(L, lo);
+        outValue->first = lua_isnil(L, -1) ? 0 : lua_tonumber(L, -1);
+        lua_pop(L, 1);
+        
+        lua_pushstring(L, "second");
+        lua_gettable(L, lo);
+        outValue->second = lua_isnil(L, -1) ? 0 : lua_tonumber(L, -1);
+        lua_pop(L, 1);
+    }
+    return ok;
+}
+
+void ipair_to_luaval(lua_State* L,const std::pair<int, int>& vec2)
+{
+    if (NULL  == L)
+        return;
+    lua_newtable(L);                                    /* L: table */
+    lua_pushstring(L, "first");                             /* L: table key */
+    lua_pushnumber(L, (lua_Number) vec2.first);               /* L: table key value*/
+    lua_rawset(L, -3);                                  /* table[key] = value, L: table */
+    lua_pushstring(L, "second");                             /* L: table key */
+    lua_pushnumber(L, (lua_Number) vec2.second);               /* L: table key value*/
+    lua_rawset(L, -3);
+    
+}
