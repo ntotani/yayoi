@@ -29,11 +29,22 @@ local function main()
 
     director:getOpenGLView():setDesignResolutionSize(360, 640, cc.ResolutionPolicy.FIXED_WIDTH)
 
+    local bs = {}
+    bs["0"] = 10
+    bs["1"] = 11
+    bs["2"] = 12
+    local red = yayoi.Piece:new(1, 1, bs, bs, 0, 2, 0, true)
+    local blue = yayoi.Piece:new(1, 1, bs, bs, 1, 2, 4, true)
+    local chip = yayoi.Chip:new(0, 1)
+    local freq = {}
+    freq[chip] = 10
+    local match = yayoi.Match:new(0, {red, blue}, 5, 5, freq)
     local ctx = {
         on = function(self, event, callback) print("ctx.on", event) end,
         getCorner = function(self) return "red" end,
         getForm = function(self) return {red = {1, 6, 11}, blue = {20, 15, 10}} end,
-        act = function(self, playerID, chipID) print("ctx.act", playerID, chipID) end
+        act = function(self, playerID, chipID) print("ctx.act", playerID, chipID) end,
+        getMatch = function(self) return match end
     }
 
     --create scene

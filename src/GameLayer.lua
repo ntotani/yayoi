@@ -1,8 +1,6 @@
 local _ = require("underscore")
 local json = require("json")
 
-local ROW = 4
-local COL = 5
 local TILE_WIDTH = 50
 local DAMAGE = {
     Player = {Player = 1, Witch = 2, Tank = 1},
@@ -32,8 +30,8 @@ function GameLayer:ctor(ctx)
 
     self:addChild(cc.TMXTiledMap:create("tmx/forest.tmx"))
     self.visibleSize = cc.Director:getInstance():getVisibleSize()
-    self.tiles = _.range(1, ROW):map(function(i)
-        return _.range(1, COL):map(function(j)
+    self.tiles = _.range(1, ctx:getMatch():getRow()):map(function(i)
+        return _.range(1, ctx:getMatch():getCol()):map(function(j)
             local tile = cc.Sprite:create("img/tile.png")
             tile:setPosition(self:idx2tilePos(i, j))
             self:addChild(tile)
@@ -70,8 +68,8 @@ function GameLayer:initHeros(dir, form, corner)
     _.each(form[corner], function(i)
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
-        local row = math.ceil(i / COL)
-        local col = (i - 1) % COL + 1
+        local row = math.ceil(i / self.ctx:getMatch():getCol())
+        local col = (i - 1) % self.ctx:getMatch():getCol() + 1
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
         player.tile = {i = row, j = col}
@@ -99,10 +97,10 @@ end
 
 function GameLayer:idx2tilePos(i, j)
     if self.ctx:getCorner() == "blue" then
-        j = COL - j + 1
+        j = self.ctx:getMatch():getCol() - j + 1
     end
-    local x = self.visibleSize.width / 2 + (j - (COL / 2 + 0.5)) * TILE_WIDTH
-    local y = self.visibleSize.height / 2 + (i - (ROW / 2 + 0.5)) * TILE_WIDTH
+    local x = self.visibleSize.width / 2 + (j - (self.ctx:getMatch():getCol() / 2 + 0.5)) * TILE_WIDTH
+    local y = self.visibleSize.height / 2 + (i - (self.ctx:getMatch():getRow() / 2 + 0.5)) * TILE_WIDTH
     return cc.p(x, y)
 end
 
@@ -220,7 +218,7 @@ function GameLayer:action(player, chip, callback)
                     player.tile.j = nj
                 end))
             end
-            if 0 < ni and ni <= ROW and 0 < nj and nj <= COL then
+            if 0 < ni and ni <= self.ctx:getMatch():getRow() and 0 < nj and nj <= self.ctx:getMatch():getCol() then
                 local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
                 local target = _.detect(self.friendsLayer:getChildren(), eq)
                 target = target or _.detect(self.enemiesLayer:getChildren(), eq)
