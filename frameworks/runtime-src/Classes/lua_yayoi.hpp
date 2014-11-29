@@ -18,4 +18,24 @@ int register_all_yayoi(lua_State* tolua_S);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif // __yayoi_h__
