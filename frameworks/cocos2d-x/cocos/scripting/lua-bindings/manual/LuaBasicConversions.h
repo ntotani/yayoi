@@ -450,7 +450,7 @@ void cclist_usertype_to_luaval(lua_State* L, const std::list<T>& inValue, const 
     for (auto value : inValue)
     {
         lua_pushnumber(L, (lua_Number)index);
-        tolua_pushusertype(L, &value, name);
+        tolua_pushusertype(L, value, name);
         lua_rawset(L, -3);
         ++index;
     }

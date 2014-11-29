@@ -28,16 +28,16 @@ using namespace yayoi;
     _match->fillDeck(RED, freq);
     auto deck = _match->getDeck(RED);
     XCTAssertEqual(1, deck.size());
-    XCTAssertEqual(2, deck.front().getDir().first);
-    XCTAssertEqual(1, deck.front().getDir().second);
+    XCTAssertEqual(2, deck.front()->getDir().first);
+    XCTAssertEqual(1, deck.front()->getDir().second);
 }
 
 - (void)testFillDeck_many {
     _match->fillDeck(RED, {{Chip(0, 1), 1}, {Chip(2, 3), 99}});
     auto deck = _match->getDeck(RED);
     XCTAssertEqual(100, deck.size());
-    XCTAssertEqual(2, deck.front().getDir().first);
-    XCTAssertEqual(3, deck.front().getDir().second);
+    XCTAssertEqual(2, deck.front()->getDir().first);
+    XCTAssertEqual(3, deck.front()->getDir().second);
 }
 
 - (void)testApplyChip_loop { // 使ったチップはデッキの最後尾に戻る
@@ -47,8 +47,8 @@ using namespace yayoi;
     _match->applyChip(&p, 0);
     auto deck = _match->getDeck(RED);
     XCTAssertEqual(2, deck.size());
-    XCTAssertNotEqual(headChip.getDir().first, deck.front().getDir().first);
-    XCTAssertNotEqual(headChip.getDir().second, deck.front().getDir().second);
+    XCTAssertNotEqual(headChip->getDir().first, deck.front()->getDir().first);
+    XCTAssertNotEqual(headChip->getDir().second, deck.front()->getDir().second);
 }
 
 Piece* createPiece() {

@@ -41,6 +41,13 @@ namespace yayoi {
                 delete e;
             }
         }
+        for (auto deck : _decks) {
+            for (auto e : deck.second) {
+                if (e) {
+                    delete e;
+                }
+            }
+        }
     }
 
     void Match::fillDeck(Team team, const map<Chip, int> &freq) {
@@ -54,7 +61,7 @@ namespace yayoi {
             return a.second < b.second;
         });
         for (auto e : chips) {
-            _decks.at(team).push_back(e.first);
+            _decks.at(team).push_back(new Chip(e.first));
         }
     }
 
@@ -66,7 +73,7 @@ namespace yayoi {
         }
         if (target->getHp() > 0) {
             auto pos = target->getPosition();
-            auto dir = (*it).getDir();
+            auto dir = (*it)->getDir();
             pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
             if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
                 Piece *onTile = nullptr;

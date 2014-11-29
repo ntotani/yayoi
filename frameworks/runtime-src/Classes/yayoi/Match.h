@@ -27,7 +27,7 @@ namespace yayoi {
         int getRow() const { return _row; };
         int getCol() const { return _col; };
         const std::vector<Piece*>& getPieces() const { return _pieces; };
-        const std::list<Chip>& getDeck(Team team) const { return _decks.at(team); };
+        const std::list<Chip*>& getDeck(Team team) const { return _decks.at(team); };
         void fillDeck(Team team, const std::map<Chip, int> &freq);
         void applyChip(Piece* target, int idx);
         static int calcDamage(Piece* from, Piece* to);
@@ -38,7 +38,7 @@ namespace yayoi {
         int _row;
         int _col;
         std::vector<Piece*> _pieces;
-        std::map<Team, std::list<Chip>> _decks;
+        std::map<Team, std::list<Chip*>> _decks;
         std::map<Team, std::pair<int, int>> _castle;
 
         void setCastle();

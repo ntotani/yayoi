@@ -131,7 +131,7 @@ conversions:
     "@vector<unsigned short.*>": "ccvector_ushort_to_luaval(tolua_S, ${in_value})"
     "pair<int, int>": "ipair_to_luaval(tolua_S, ${in_value})"
     "std::map<yayoi::Chip, int, std::less<yayoi::Chip>, std::allocator<std::pair<const yayoi::Chip, int> > >": "ccvaluemapintkey_to_luaval(tolua_S, ${in_value})"
-    "list<yayoi::Chip, std::allocator<yayoi::Chip> >": "cclist_usertype_to_luaval(tolua_S, ${in_value}, \"yayoi.Chip\")"
+    "list<yayoi::Chip *, std::allocator<yayoi::Chip *> >": "cclist_usertype_to_luaval(tolua_S, ${in_value}, \"yayoi.Chip\")"
     "vector<yayoi::Piece *, std::allocator<yayoi::Piece *> >": "ccvector_usertype_to_luaval(tolua_S, ${in_value}, \"yayoi.Piece\")"
 
     object: "object_to_luaval<${ntype.replace(\"*\", \"\").replace(\"const \", \"\")}>(tolua_S, \"${scriptname}\",(${ntype.replace(\"const \", \"\")})${in_value})"
