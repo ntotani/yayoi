@@ -50,6 +50,12 @@
         
 --------------------------------
 -- 
+-- @function [parent=#Piece] setIdInMatch 
+-- @param self
+-- @param #int idInMatch
+        
+--------------------------------
+-- 
 -- @function [parent=#Piece] getIndividualStatus 
 -- @param self
 -- @param #int param
@@ -66,6 +72,12 @@
 -- @function [parent=#Piece] isKing 
 -- @param self
 -- @return bool#bool ret (return value: bool)
+        
+--------------------------------
+-- 
+-- @function [parent=#Piece] getIdInMatch 
+-- @param self
+-- @return int#int ret (return value: int)
         
 --------------------------------
 -- 

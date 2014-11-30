@@ -12,6 +12,11 @@
 
 
 --------------------------------------------------------
+-- the yayoi ActionResult
+-- @field [parent=#yayoi] ActionResult#ActionResult ActionResult preloaded module
+
+
+--------------------------------------------------------
 -- the yayoi Match
 -- @field [parent=#yayoi] Match#Match Match preloaded module
 

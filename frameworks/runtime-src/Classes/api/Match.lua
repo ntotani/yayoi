@@ -35,6 +35,7 @@
 -- @param self
 -- @param #yayoi.Piece target
 -- @param #int idx
+-- @return ActionResult#ActionResult ret (return value: yayoi.ActionResult)
         
 --------------------------------
 -- 
