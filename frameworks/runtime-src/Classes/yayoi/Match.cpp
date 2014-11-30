@@ -87,34 +87,35 @@ namespace yayoi {
         }
     }
 
-    ActionResult* Match::applyChip(Piece *target, int idx) {
-        auto &deck = _decks.at(target->getTeam());
+    ActionResult* Match::applyChip(Piece *actor, int idx) {
+        auto &deck = _decks.at(actor->getTeam());
         auto it = deck.begin();
         for (int i = 0; i < idx; i++) {
             it++;
         }
-        ActionResult *result = new ActionResult(target, *it);
-        if (target->getHp() > 0) {
-            auto pos = target->getPosition();
+        ActionResult *result = new ActionResult(actor, *it);
+        if (actor->getHp() > 0) {
+            auto pos = actor->getPosition();
             auto dir = (*it)->getDir();
             pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
             if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
-                Piece *onTile = nullptr;
+                Piece *target = nullptr;
                 for (auto e : _pieces) {
                     if (e->getPosition() == newPos) {
-                        onTile = e;
+                        target = e;
+                        result->setTarget(target);
                         break;
                     }
                 }
-                if (onTile == nullptr) {
-                    target->applyChip(dir);
+                if (target == nullptr) {
+                    actor->applyChip(dir);
                     result->setType(ActionResult::MOVE);
                     result->setMove(dir);
                 } else {
-                    onTile->applyDamage(calcDamage(target, onTile));
+                    target->applyDamage(calcDamage(actor, target));
                     result->setType(ActionResult::ATTACK);
-                    if (onTile->getHp() <= 0) {
-                        target->applyChip(dir);
+                    if (target->getHp() <= 0) {
+                        actor->applyChip(dir);
                         result->setType(ActionResult::KILL);
                         result->setMove(dir);
                     }

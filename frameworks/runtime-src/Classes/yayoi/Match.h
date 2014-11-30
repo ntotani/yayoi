@@ -25,18 +25,21 @@ namespace yayoi {
     class ActionResult {
     public:
         enum Type { MOVE, WALL, ATTACK, KILL, DEAD };
-        ActionResult(Piece* piece, Chip* chip):_piece(piece),_chip(chip),_type(DEAD),_move({0, 0}){};
-        Piece* getPiece() const { return _piece; };
+        ActionResult(Piece* actor, Chip* chip):_actor(actor),_chip(chip),_type(DEAD),_move({0, 0}){};
+        Piece* getActor() const { return _actor; };
         Chip* getChip() const { return _chip; };
         Type getType() const { return _type; };
         void setType(Type type) { _type = type; };
         const std::pair<int, int>& getMove() const { return _move; };
         void setMove(const std::pair<int, int>& move) { _move = move; };
+        Piece* getTarget() const { return _target; }
+        void setTarget(Piece* target) { _target = target; };
     private:
-        Piece* _piece;
+        Piece* _actor;
         Chip* _chip;
         Type _type;
         std::pair<int, int> _move;
+        Piece* _target;
     };
 
     class Match {
