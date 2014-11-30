@@ -60,11 +60,9 @@ end
 function GameLayer:initHeros(dir, corner)
     local layer = cc.Layer:create()
     local jobs = {"Player", "Witch", "Tank"}
-    local id = -1
     local pieces = self.ctx:getMatch():getPieces()
     local myTeam = corner == "red" and 0 or 1
     _.each(pieces, function(e)
-        id = id + 1
         if e:getTeam() ~= myTeam then return end
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
@@ -72,9 +70,7 @@ function GameLayer:initHeros(dir, corner)
         local col = e:getPosition().second
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
-        player.tile = {i = row + 1, j = col + 1}
-        player.job = job
-        player.id = id
+        player.model = e
         player.hearts = _.range(1, 3):map(function(i)
             local heart = cc.Sprite:create("img/heart.png")
             heart:setPosition((i - 2) * heart:getContentSize().width, 20)
@@ -129,9 +125,8 @@ function GameLayer:drawChip(idx, layer, turn, corner)
         name = dir.first > 0 and "up" or "down"
     end
     local chip = cc.Sprite:create("img/chip_" .. name .. ".png")
-    chip.idx = idx - 1
-    chip.dir = {i = dir.first, j = dir.second}
-    chip.dir.j = (corner == "red" and 1 or -1) * chip.dir.j
+    chip.model = deck[idx]
+    chip.idx = idx
     chip:setPosition(self:idx2chipPos(idx, turn))
     chip:setScaleX(-turn)
     layer:addChild(chip)
@@ -150,13 +145,14 @@ end
 
 function GameLayer:onTouchEnded(touch, event)
     local player = _.detect(self.friendsLayer:getChildren(), function(e)
-        return cc.rectContainsPoint(self.tiles[e.tile.i][e.tile.j]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
+        local pos = e.model:getPosition()
+        return cc.rectContainsPoint(self.tiles[pos.first + 1][pos.second + 1]:getBoundingBox(), cc.p(self.holdChip:getPosition()))
     end)
     if player then
         self.canTouch = false
-        self.ctx:act(player.id, self.holdChip.idx)
+        self.ctx:act(player.model:getIdInMatch(), self.holdChip.model:getIdInDeck())
     end
-    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx + 1, self.turn))
+    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     self.holdChip = nil
 end
 
@@ -166,40 +162,38 @@ function GameLayer:onTurn(data)
     local func = function()end
     func = function(i)
         if i > #data then
+            --[[
             if self.ctx:getCorner() == "red" then
-                self:drawChip(redIdx, self.myChipsLayer, -1, "red")
-                self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
+            self:drawChip(redIdx, self.myChipsLayer, -1, "red")
+            self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
             else
-                self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
-                self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
+            self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
+            self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
             end
+            ]]
             self.canTouch = true
         else
-            local e = data[i]
-            local actor = tonumber(e:sub(1, 1))
-            local action = tonumber(e:sub(2, 2))
-            local eq = function(e) return e.id == actor end
+            local ar = data[i]
+            local eq = function(e) return e.model == ar:getActor() end
             local target = _.detect(self.friendsLayer:getChildren(), eq)
             target = target or _.detect(self.enemiesLayer:getChildren(), eq)
             local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
-            local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
-            self:action(target, chip, _.curry(func, i + 1))
-            if self.ctx:getMatch():getPieces()[actor + 1]:getTeam() == 0 then
-                redIdx = action
+            local chip = _.detect(chips:getChildren(), function(e) return e.model == ar:getChip() end)
+            self:action(ar, target, chip, _.curry(func, i + 1))
+            if ar:getActor():getTeam() == 0 then
+                redIdx = chip.idx
             else
-                blueIdx = action
+                blueIdx = chip.idx
             end
         end
     end
     func(1)
 end
 
-function GameLayer:action(player, chip, callback)
+function GameLayer:action(ar, player, chip, callback)
     chip:runAction(cc.Sequence:create(
         cc.MoveTo:create(0.5, cc.p(player:getPosition())),
         cc.CallFunc:create(function()
-            local ni = player.tile.i - 1 + chip.dir.i
-            local nj = player.tile.j - 1 + chip.dir.j
             local playerSeq = {}
             local lush = function()
                 table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)))
@@ -207,32 +201,26 @@ function GameLayer:action(player, chip, callback)
                 table.insert(playerSeq, cc.DelayTime:create(0.3))
             end
             local gain = function()
-                table.insert(playerSeq, cc.MoveTo:create(0.5, self:idx2tilePos(ni, nj)))
-                table.insert(playerSeq, cc.CallFunc:create(function()
-                    player.tile.i = ni
-                    player.tile.j = nj
-                end))
+                local pos = player.model:getPosition()
+                table.insert(playerSeq, cc.MoveTo:create(0.5, self:idx2tilePos(pos.first, pos.second)))
             end
-            if 0 < ni and ni <= self.ctx:getMatch():getRow() and 0 < nj and nj <= self.ctx:getMatch():getCol() then
-                local eq = function(e) return e.tile.i == ni and e.tile.j == nj end
-                local target = _.detect(self.friendsLayer:getChildren(), eq)
-                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-                if target then
-                    lush()
-                    local dmg = DAMAGE[player.job][target.job]
-                    if #target.hearts <= dmg then
-                        target:removeFromParent()
-                        gain()
-                    else
-                        for i=1, dmg do
-                            _(target.hearts):pop():removeFromParent()
-                        end
-                    end
-                else
-                    gain()
-                end
+            local type = ar:getType()
+            if type == 0 then -- MOVE
+                gain()
+            elseif type == 1 then -- WALL
+                lush()
             else
                 lush()
+                local eq = function(e) return e.model == ar:getTarget() end
+                local target = _.detect(self.friendsLayer:getChildren(), eq)
+                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+                local dmg = DAMAGE[player.job][target.job]
+                if type == 3 then -- KILL
+                    target:removeFromParent()
+                    gain()
+                else -- ATTACK
+                    for i=1, dmg do _(target.hearts):pop():removeFromParent() end
+                end
             end
             table.insert(playerSeq, cc.CallFunc:create(callback))
             player:stopAllActions()
