@@ -19,6 +19,23 @@ namespace yayoi {
         std::pair<int, int> _dir;
     };
 
+    class ActionResult {
+    public:
+        enum Type { MOVE, WALL, ATTACK, KILL, DEAD };
+        ActionResult(Piece* piece, Chip* chip):_piece(piece),_chip(chip),_type(DEAD),_move({0, 0}){};
+        Piece* getPiece() const { return _piece; };
+        Chip* getChip() const { return _chip; };
+        Type getType() const { return _type; };
+        void setType(Type type) { _type = type; };
+        const std::pair<int, int>& getMove() const { return _move; };
+        void setMove(const std::pair<int, int>& move) { _move = move; };
+    private:
+        Piece* _piece;
+        Chip* _chip;
+        Type _type;
+        std::pair<int, int> _move;
+    };
+
     class Match {
     public:
         Match();
@@ -29,7 +46,7 @@ namespace yayoi {
         const std::vector<Piece*>& getPieces() const { return _pieces; };
         const std::list<Chip*>& getDeck(Team team) const { return _decks.at(team); };
         void fillDeck(Team team, const std::map<Chip, int> &freq);
-        void applyChip(Piece* target, int idx);
+        ActionResult* applyChip(Piece* target, int idx);
         static int calcDamage(Piece* from, Piece* to);
         Team wonTeam() const;
 
@@ -40,6 +57,7 @@ namespace yayoi {
         std::vector<Piece*> _pieces;
         std::map<Team, std::list<Chip*>> _decks;
         std::map<Team, std::pair<int, int>> _castle;
+        std::vector<ActionResult*> _actionResults;
 
         void setCastle();
     };

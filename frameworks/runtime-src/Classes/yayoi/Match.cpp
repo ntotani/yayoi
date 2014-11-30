@@ -11,7 +11,8 @@ namespace yayoi {
     ,_col(1)
     ,_pieces({})
     ,_decks({{RED, {}}, {BLUE, {}}})
-    ,_castle({}) {
+    ,_castle({})
+    ,_actionResults({}) {
         setCastle();
     }
 
@@ -21,7 +22,8 @@ namespace yayoi {
     ,_col(col)
     ,_pieces(pieces)
     ,_decks({{RED, {}}, {BLUE, {}}})
-    ,_castle({}) {
+    ,_castle({})
+    ,_actionResults({}) {
         fillDeck(RED, freq);
         fillDeck(BLUE, freq);
         setCastle();
@@ -48,6 +50,11 @@ namespace yayoi {
                 }
             }
         }
+        for (auto e : _actionResults) {
+            if (e) {
+                delete e;
+            }
+        }
     }
 
     void Match::fillDeck(Team team, const map<Chip, int> &freq) {
@@ -65,12 +72,13 @@ namespace yayoi {
         }
     }
 
-    void Match::applyChip(Piece *target, int idx) {
+    ActionResult* Match::applyChip(Piece *target, int idx) {
         auto &deck = _decks.at(target->getTeam());
         auto it = deck.begin();
         for (int i = 0; i < idx; i++) {
             it++;
         }
+        ActionResult *result = new ActionResult(target, *it);
         if (target->getHp() > 0) {
             auto pos = target->getPosition();
             auto dir = (*it)->getDir();
@@ -85,16 +93,25 @@ namespace yayoi {
                 }
                 if (onTile == nullptr) {
                     target->applyChip(dir);
+                    result->setType(ActionResult::MOVE);
+                    result->setMove(dir);
                 } else {
                     onTile->applyDamage(calcDamage(target, onTile));
+                    result->setType(ActionResult::ATTACK);
                     if (onTile->getHp() <= 0) {
                         target->applyChip(dir);
+                        result->setType(ActionResult::KILL);
+                        result->setMove(dir);
                     }
                 }
+            } else {
+                result->setType(ActionResult::WALL);
             }
         }
         deck.erase(it);
         deck.push_back(*it);
+        _actionResults.push_back(result);
+        return result;
     }
 
     int Match::calcDamage(Piece *from, Piece *to) {

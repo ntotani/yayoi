@@ -67,7 +67,10 @@ Piece* createBlue() {
     auto p = createPiece();
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(p, 0);
+    auto ret = _match->applyChip(p, 0);
+    XCTAssertEqual(ActionResult::MOVE, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(1, ret->getMove().second);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(1, p->getPosition().second);
 }
@@ -76,7 +79,10 @@ Piece* createBlue() {
     auto p = createPiece();
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, -1), 1}});
-    _match->applyChip(p, 0);
+    auto ret = _match->applyChip(p, 0);
+    XCTAssertEqual(ActionResult::WALL, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(0, ret->getMove().second);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(0, p->getPosition().second);
 }
@@ -86,7 +92,10 @@ Piece* createBlue() {
     p->applyDamage(100);
     delete _match;
     _match = new Match(0, {p}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(p, 0);
+    auto ret = _match->applyChip(p, 0);
+    XCTAssertEqual(ActionResult::DEAD, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(0, ret->getMove().second);
     XCTAssertEqual(-1, p->getPosition().first);
     XCTAssertEqual(-1, p->getPosition().second);
 }
@@ -97,7 +106,10 @@ Piece* createBlue() {
     to->applyChip({0, 1});
     delete _match;
     _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(from, 0);
+    auto ret = _match->applyChip(from, 0);
+    XCTAssertEqual(ActionResult::ATTACK, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(0, ret->getMove().second);
     XCTAssertEqual(0, from->getPosition().first);
     XCTAssertEqual(0, from->getPosition().second);
     XCTAssertNotEqual(Piece::MAX_HP, to->getHp());
@@ -110,7 +122,10 @@ Piece* createBlue() {
     to->applyDamage(99);
     delete _match;
     _match = new Match(0, {from, to}, 5, 5, {{Chip(0, 1), 1}});
-    _match->applyChip(from, 0);
+    auto ret = _match->applyChip(from, 0);
+    XCTAssertEqual(ActionResult::KILL, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(1, ret->getMove().second);
     XCTAssertEqual(0, from->getPosition().first);
     XCTAssertEqual(1, from->getPosition().second);
     XCTAssertEqual(0, to->getHp());
