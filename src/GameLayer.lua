@@ -7,7 +7,6 @@ local DAMAGE = {
     Witch  = {Player = 1, Witch = 1, Tank = 2},
     Tank   = {Player = 2, Witch = 1, Tank = 1}
 }
-local DECK = { front = 6, up = 3, down = 3, ufront = 6, dfront = 6}
 
 local GameLayer = {}
 GameLayer = class("GameLayer",function()
@@ -21,8 +20,6 @@ end
 function GameLayer:ctor(ctx)
     self.ctx = ctx
     self.turn = -1
-    self.redDeck = {}
-    self.blueDeck = {}
     self.canTouch = true
     ctx:on("turn", _.curry(self.onTurn, self))
     local corner = ctx:getCorner()
@@ -117,31 +114,27 @@ function GameLayer:idx2chipPos(idx, turn)
 end
 
 function GameLayer:drawChip(idx, layer, turn, corner)
-    local deck = corner == "red" and self.redDeck or self.blueDeck
-    if #deck < 1 then self:refillDeck(deck) end
-    local dirs = {front = {i=0, j=1}, up = {i=1, j=0}, down = {i=-1, j=0}, ufront = {i=1, j=1}, dfront = {i=-1, j=1}}
-    local dir = _.shift(deck)
-    local chip = cc.Sprite:create("img/chip_" .. dir .. ".png")
+    local deck = self.ctx:getMatch():getDeck(corner == "red" and 0 or 1)
+    local dir = deck[idx]:getDir()
+    local name = ""
+    if dir.second == 1 then
+        if dir.first == 1 then
+            name = "ufront"
+        elseif dir.first == -1 then
+            name = "dfront"
+        else
+            name = "front"
+        end
+    else
+        name = dir.first > 0 and "up" or "down"
+    end
+    local chip = cc.Sprite:create("img/chip_" .. name .. ".png")
     chip.idx = idx
-    chip.dir = dirs[dir]
+    chip.dir = {i = dir.first, j = dir.second}
     chip.dir.j = (corner == "red" and 1 or -1) * chip.dir.j
     chip:setPosition(self:idx2chipPos(idx, turn))
     chip:setScaleX(-turn)
     layer:addChild(chip)
-end
-
-function GameLayer:refillDeck(deck)
-    local chips = {}
-    _(_.keys(DECK)):chain():sort():each(function(key)
-        for i=1, DECK[key] do
-            table.insert(chips, {chip = key, lot = random() % 100})
-        end
-    end)
-    _(chips):chain():sort(function(a, b)
-        return a.lot < b.lot
-    end):each(function(e)
-        _.push(deck, e.chip)
-    end)
 end
 
 function GameLayer:onTouchBegan(touch, event)

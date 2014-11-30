@@ -33,11 +33,15 @@ local function main()
     bs["0"] = 10
     bs["1"] = 11
     bs["2"] = 12
-    local red = yayoi.Piece:new(1, 1, bs, bs, 0, 2, 0, true)
+    local red = yayoi.Piece:new(1, 1, bs, bs, 0, 1, 1, true)
     local blue = yayoi.Piece:new(1, 1, bs, bs, 1, 2, 4, true)
-    local chip = yayoi.Chip:new(0, 1)
     local freq = {}
-    freq[chip] = 10
+    local DECK = { front = 6, up = 3, down = 3, ufront = 6, dfront = 6}
+    freq[yayoi.Chip:new(0, 1)] = 6
+    freq[yayoi.Chip:new(1, 0)] = 3
+    freq[yayoi.Chip:new(-1, 0)] = 3
+    freq[yayoi.Chip:new(1, 1)] = 6
+    freq[yayoi.Chip:new(-1, 1)] = 6
     local match = yayoi.Match:new(0, {red, blue}, 5, 5, freq)
     local ctx = {
         on = function(self, event, callback) print("ctx.on", event) end,
