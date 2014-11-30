@@ -2,11 +2,6 @@ local _ = require("underscore")
 local json = require("json")
 
 local TILE_WIDTH = 50
-local DAMAGE = {
-    Player = {Player = 1, Witch = 2, Tank = 1},
-    Witch  = {Player = 1, Witch = 1, Tank = 2},
-    Tank   = {Player = 2, Witch = 1, Tank = 1}
-}
 
 local GameLayer = {}
 GameLayer = class("GameLayer",function()
@@ -150,7 +145,7 @@ function GameLayer:onTouchEnded(touch, event)
     end)
     if player then
         self.canTouch = false
-        self.ctx:act(player.model:getIdInMatch(), self.holdChip.model:getIdInDeck())
+        self.ctx:act(player.model:getIdInMatch(), self.holdChip.idx - 1)
     end
     self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
     self.holdChip = nil
@@ -218,7 +213,7 @@ function GameLayer:action(ar, player, chip, callback)
                 local eq = function(e) return e.model == ar:getTarget() end
                 local target = _.detect(self.friendsLayer:getChildren(), eq)
                 target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-                local dmg = DAMAGE[player.job][target.job]
+                local dmg = 1
                 if type == 3 then -- KILL
                     target:removeFromParent()
                     gain()
