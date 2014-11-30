@@ -47,7 +47,7 @@ local function main()
         getCorner = function(self) return "red" end,
         act = function(self, playerID, chipID)
             local p = match:getPieces()[playerID + 1]
-            self.callback({match:applyChip(p, chipID)})
+            self.callback({match:applyChip(p, chipID), match:applyChip(blue, 0)})
         end,
         getMatch = function(self) return match end
     }

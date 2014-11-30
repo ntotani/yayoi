@@ -157,20 +157,27 @@ function GameLayer:onTouchEnded(touch, event)
 end
 
 function GameLayer:onTurn(data)
-    local redIdx = 1
-    local blueIdx = 1
     local func = function()end
     func = function(i)
         if i > #data then
-            --[[
-            if self.ctx:getCorner() == "red" then
-            self:drawChip(redIdx, self.myChipsLayer, -1, "red")
-            self:drawChip(blueIdx, self.hisChipsLayer, 1, "blue")
-            else
-            self:drawChip(redIdx, self.hisChipsLayer, 1, "red")
-            self:drawChip(blueIdx, self.myChipsLayer, -1, "blue")
+            local shift = function(chips, deck, turn)
+                for i, chip in ipairs(chips:getChildren()) do
+                    local idx = 0
+                    for j, e in ipairs(deck) do
+                        if chip.model == e then
+                            idx = j
+                            break
+                        end
+                    end
+                    chip.idx = idx
+                    chip:runAction(cc.MoveTo:create(0.5, self:idx2chipPos(idx, turn)))
+                end
             end
-            ]]
+            local c = self.ctx:getCorner()
+            shift(self.myChipsLayer, self.ctx:getMatch():getDeck(c == "red" and 0 or 1), -1)
+            shift(self.hisChipsLayer, self.ctx:getMatch():getDeck(c == "red" and 1 or 0), 1)
+            self:drawChip(4, self.myChipsLayer, -1, c)
+            self:drawChip(4, self.hisChipsLayer, 1, reverse(c))
             self.canTouch = true
         else
             local ar = data[i]
@@ -180,11 +187,6 @@ function GameLayer:onTurn(data)
             local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
             local chip = _.detect(chips:getChildren(), function(e) return e.model == ar:getChip() end)
             self:action(ar, target, chip, _.curry(func, i + 1))
-            if ar:getActor():getTeam() == 0 then
-                redIdx = chip.idx
-            else
-                blueIdx = chip.idx
-            end
         end
     end
     func(1)
@@ -196,8 +198,10 @@ function GameLayer:action(ar, player, chip, callback)
         cc.CallFunc:create(function()
             local playerSeq = {}
             local lush = function()
-                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)))
-                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(player.tile.i, player.tile.j)))
+                local pos = player.model:getPosition()
+                local move = ar:getMove()
+                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first + move.first, pos.second + move.second)))
+                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first, pos.second)))
                 table.insert(playerSeq, cc.DelayTime:create(0.3))
             end
             local gain = function()
