@@ -33,20 +33,23 @@ local function main()
     bs["0"] = 10
     bs["1"] = 11
     bs["2"] = 12
-    local red = yayoi.Piece:new(1, 1, bs, bs, 0, 1, 1, true)
+    local red  = yayoi.Piece:new(1, 1, bs, bs, 0, 2, 0, true)
     local blue = yayoi.Piece:new(1, 1, bs, bs, 1, 2, 4, true)
     local freq = {}
-    local DECK = { front = 6, up = 3, down = 3, ufront = 6, dfront = 6}
-    freq[yayoi.Chip:new(0, 1)] = 6
-    freq[yayoi.Chip:new(1, 0)] = 3
-    freq[yayoi.Chip:new(-1, 0)] = 3
-    freq[yayoi.Chip:new(1, 1)] = 6
-    freq[yayoi.Chip:new(-1, 1)] = 6
+    freq[yayoi.Chip:new( 0, 1)] = 6 -- front
+    freq[yayoi.Chip:new( 1, 0)] = 3 -- up
+    freq[yayoi.Chip:new(-1, 0)] = 3 -- down
+    freq[yayoi.Chip:new( 1, 1)] = 6 -- ufront
+    freq[yayoi.Chip:new(-1, 1)] = 6 -- dfront
     local match = yayoi.Match:new(0, {red, blue}, 5, 5, freq)
     local ctx = {
-        on = function(self, event, callback) print("ctx.on", event) end,
+        on = function(self, event, callback) self.callback = callback end,
         getCorner = function(self) return "red" end,
-        act = function(self, playerID, chipID) print("ctx.act", playerID, chipID) end,
+        act = function(self, playerID, chipID)
+            local p = match:getPieces()[playerID + 1]
+            match:applyChip(p, chipID)
+            self.callback({playerID .. chipID, "10"})
+        end,
         getMatch = function(self) return match end
     }
 

@@ -60,10 +60,11 @@ end
 function GameLayer:initHeros(dir, corner)
     local layer = cc.Layer:create()
     local jobs = {"Player", "Witch", "Tank"}
-    local id = (corner == "blue" and 4 or 1)
+    local id = -1
     local pieces = self.ctx:getMatch():getPieces()
     local myTeam = corner == "red" and 0 or 1
     _.each(pieces, function(e)
+        id = id + 1
         if e:getTeam() ~= myTeam then return end
         local job = _.shift(jobs)
         local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
@@ -71,10 +72,9 @@ function GameLayer:initHeros(dir, corner)
         local col = e:getPosition().second
         player:setPosition(self:idx2tilePos(row, col))
         player:setScaleX(dir)
-        player.tile = {i = row, j = col}
+        player.tile = {i = row + 1, j = col + 1}
         player.job = job
         player.id = id
-        id = id + 1
         player.hearts = _.range(1, 3):map(function(i)
             local heart = cc.Sprite:create("img/heart.png")
             heart:setPosition((i - 2) * heart:getContentSize().width, 20)
@@ -129,7 +129,7 @@ function GameLayer:drawChip(idx, layer, turn, corner)
         name = dir.first > 0 and "up" or "down"
     end
     local chip = cc.Sprite:create("img/chip_" .. name .. ".png")
-    chip.idx = idx
+    chip.idx = idx - 1
     chip.dir = {i = dir.first, j = dir.second}
     chip.dir.j = (corner == "red" and 1 or -1) * chip.dir.j
     chip:setPosition(self:idx2chipPos(idx, turn))
@@ -156,7 +156,7 @@ function GameLayer:onTouchEnded(touch, event)
         self.canTouch = false
         self.ctx:act(player.id, self.holdChip.idx)
     end
-    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx, self.turn))
+    self.holdChip:setPosition(self:idx2chipPos(self.holdChip.idx + 1, self.turn))
     self.holdChip = nil
 end
 
@@ -184,7 +184,7 @@ function GameLayer:onTurn(data)
             local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
             local chip = _.detect(chips:getChildren(), function(e) return e.idx == action end)
             self:action(target, chip, _.curry(func, i + 1))
-            if actor <= 3 then
+            if self.ctx:getMatch():getPieces()[actor + 1]:getTeam() == 0 then
                 redIdx = action
             else
                 blueIdx = action
@@ -198,8 +198,8 @@ function GameLayer:action(player, chip, callback)
     chip:runAction(cc.Sequence:create(
         cc.MoveTo:create(0.5, cc.p(player:getPosition())),
         cc.CallFunc:create(function()
-            local ni = player.tile.i + chip.dir.i
-            local nj = player.tile.j + chip.dir.j
+            local ni = player.tile.i - 1 + chip.dir.i
+            local nj = player.tile.j - 1 + chip.dir.j
             local playerSeq = {}
             local lush = function()
                 table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(ni, nj)))
