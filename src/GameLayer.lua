@@ -87,7 +87,7 @@ end
 
 function GameLayer:idx2tilePos(i, j)
     if self.ctx:getCorner() == "blue" then
-        j = self.ctx:getMatch():getCol() - j + 1
+        j = self.ctx:getMatch():getCol() - j - 1
     end
     local x = self.visibleSize.width / 2 + (j - (self.ctx:getMatch():getCol() / 2 - 0.5)) * TILE_WIDTH
     local y = self.visibleSize.height / 2 + (i - (self.ctx:getMatch():getRow() / 2 - 0.5)) * TILE_WIDTH

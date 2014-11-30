@@ -60,7 +60,7 @@ Parse.Cloud.define("start", function(req, res) {
         success: function(obj) {
             push({
                 name: 'start',
-                data: JSON.stringify({id: obj.id, form: {red: [1, 6, 11], blue:[20, 15, 10]}, seed: obj.seed}),
+                data: JSON.stringify({id: obj.id, form: {red: [1, 6, 11], blue:[20, 15, 10]}, seed: obj.get("seed")}),
                 channel: 'private-' + channelId
             }, function(httpResponse) {
                 res.success(httpResponse.text);
