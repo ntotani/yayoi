@@ -14,6 +14,7 @@ namespace yayoi {
     ,_castle({})
     ,_actionResults({}) {
         setCastle();
+        setIds();
     }
 
     Match::Match(int seed, vector<Piece*> pieces, int row, int col, const map<Chip, int> &freq)
@@ -26,7 +27,21 @@ namespace yayoi {
     ,_actionResults({}) {
         fillDeck(RED, freq);
         fillDeck(BLUE, freq);
+        setIds();
         setCastle();
+    }
+
+    void Match::setIds() {
+        for (int i = 0; i < _pieces.size(); i++) {
+            _pieces[i]->setIdInMatch(i);
+        }
+        for (auto &deck : _decks) {
+            int id = 0;
+            for (auto e : deck.second) {
+                e->setIdInDeck(id);
+                id++;
+            }
+        }
     }
 
     void Match::setCastle() {

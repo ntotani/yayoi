@@ -63,6 +63,22 @@ Piece* createBlue() {
     return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, BLUE, 0, 1, true);
 }
 
+- (void)testSetIds {
+    auto red = createKing();
+    auto blue = createBlue();
+    delete _match;
+    _match = new Match(0, {red, blue}, 5, 5, {{Chip(0, 1), 2}});
+    XCTAssertEqual(0, red->getIdInMatch());
+    XCTAssertEqual(1, blue->getIdInMatch());
+    for (auto team : {RED, BLUE}) {
+        int idInDeck = 0;
+        for (auto chip : _match->getDeck(team)) {
+            XCTAssertEqual(idInDeck, chip->getIdInDeck());
+            idInDeck++;
+        }
+    }
+}
+
 - (void)testApplyChip_gain {
     auto p = createPiece();
     delete _match;

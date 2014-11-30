@@ -12,7 +12,8 @@ namespace yayoi {
     ,_hp(MAX_HP)
     ,_team(RED)
     ,_position({0, 0})
-    ,_king(false) {
+    ,_king(false)
+    ,_idInMatch(0) {
     }
 
     Piece::Piece(Job job, Color color, const map<Param, int> &baseStatus, const map<Param, int> &individualStatus, Team team, int row, int col, bool king)
@@ -23,7 +24,8 @@ namespace yayoi {
     ,_hp(MAX_HP)
     ,_team(team)
     ,_position({row, col})
-    ,_king(king) {
+    ,_king(king)
+    ,_idInMatch(0) {
     }
 
     Piece::~Piece() {

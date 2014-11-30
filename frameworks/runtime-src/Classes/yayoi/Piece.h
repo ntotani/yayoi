@@ -29,6 +29,8 @@ namespace yayoi {
         Team getTeam() const { return _team; };
         const std::pair<int, int>& getPosition() const { return _position; };
         bool isKing() const { return _king; };
+        int getIdInMatch() const { return _idInMatch; };
+        void setIdInMatch(int idInMatch) { _idInMatch = idInMatch; };
         void applyChip(const std::pair<int, int>& chip);
         int applyDamage(int damage);
 
@@ -41,6 +43,7 @@ namespace yayoi {
         Team _team;
         std::pair<int, int> _position;
         bool _king;
+        int _idInMatch;
     };
 
 }

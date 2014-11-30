@@ -11,12 +11,15 @@ namespace yayoi {
 
     class Chip {
     public:
-        Chip(int vertical, int horizon):_dir({vertical, horizon}){};
+        Chip(int vertical, int horizon):_dir({vertical, horizon}),_idInDeck(0){};
         ~Chip(){};
         const std::pair<int, int>& getDir() const { return _dir; };
+        int getIdInDeck() const { return _idInDeck; };
+        void setIdInDeck(int idInDeck) { _idInDeck = idInDeck; };
         bool operator<(const Chip &e) const { return _dir < e._dir; };
     private:
         std::pair<int, int> _dir;
+        int _idInDeck;
     };
 
     class ActionResult {
@@ -59,6 +62,7 @@ namespace yayoi {
         std::map<Team, std::pair<int, int>> _castle;
         std::vector<ActionResult*> _actionResults;
 
+        void setIds();
         void setCastle();
     };
 
