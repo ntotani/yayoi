@@ -96,7 +96,10 @@ namespace yayoi {
         ActionResult *result = new ActionResult(actor, *it);
         if (actor->getHp() > 0) {
             auto pos = actor->getPosition();
-            auto dir = (*it)->getDir();
+            auto dir = pair<int, int>((*it)->getDir());
+            if (actor->getTeam() == BLUE) {
+                dir.second *= -1;
+            }
             pair<int, int> newPos(pos.first + dir.first, pos.second + dir.second);
             if (newPos.first >= 0 && newPos.first < _row && newPos.second >= 0 && newPos.second < _col) {
                 Piece *target = nullptr;
@@ -110,19 +113,18 @@ namespace yayoi {
                 if (target == nullptr) {
                     actor->applyChip(dir);
                     result->setType(ActionResult::MOVE);
-                    result->setMove(dir);
                 } else {
                     target->applyDamage(calcDamage(actor, target));
                     result->setType(ActionResult::ATTACK);
                     if (target->getHp() <= 0) {
                         actor->applyChip(dir);
                         result->setType(ActionResult::KILL);
-                        result->setMove(dir);
                     }
                 }
             } else {
                 result->setType(ActionResult::WALL);
             }
+            result->setMove(dir);
         }
         deck.erase(it);
         deck.push_back(*it);

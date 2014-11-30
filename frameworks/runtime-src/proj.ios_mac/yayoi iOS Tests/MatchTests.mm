@@ -91,6 +91,20 @@ Piece* createBlue() {
     XCTAssertEqual(1, p->getPosition().second);
 }
 
+- (void)testApplyChip_blue { // BLUEは反対方向に動く
+    auto red = createKing();
+    auto blue = createBlue();
+    blue->applyChip({0, 3});
+    delete _match;
+    _match = new Match(0, {red, blue}, 5, 5, {{Chip(0, 1), 1}});
+    auto ret = _match->applyChip(blue, 0);
+    XCTAssertEqual(ActionResult::MOVE, ret->getType());
+    XCTAssertEqual(0, ret->getMove().first);
+    XCTAssertEqual(-1, ret->getMove().second);
+    XCTAssertEqual(0, blue->getPosition().first);
+    XCTAssertEqual(3, blue->getPosition().second);
+}
+
 - (void)testApplyChip_wall { // 壁に進もうとすると失敗する
     auto p = createPiece();
     delete _match;
@@ -98,7 +112,7 @@ Piece* createBlue() {
     auto ret = _match->applyChip(p, 0);
     XCTAssertEqual(ActionResult::WALL, ret->getType());
     XCTAssertEqual(0, ret->getMove().first);
-    XCTAssertEqual(0, ret->getMove().second);
+    XCTAssertEqual(-1, ret->getMove().second);
     XCTAssertEqual(0, p->getPosition().first);
     XCTAssertEqual(0, p->getPosition().second);
 }
@@ -125,7 +139,7 @@ Piece* createBlue() {
     auto ret = _match->applyChip(from, 0);
     XCTAssertEqual(ActionResult::ATTACK, ret->getType());
     XCTAssertEqual(0, ret->getMove().first);
-    XCTAssertEqual(0, ret->getMove().second);
+    XCTAssertEqual(1, ret->getMove().second);
     XCTAssertEqual(0, from->getPosition().first);
     XCTAssertEqual(0, from->getPosition().second);
     XCTAssertNotEqual(Piece::MAX_HP, to->getHp());
