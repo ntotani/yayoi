@@ -13,17 +13,28 @@ namespace yayoi {
         enum Job { FIGHTER, MAGE, HEALER };
         enum Color { SUN, MON, TUE, WED, THU, FRI, SAT };
 
+        class Master {
+        public:
+            Job _job;
+            Color _color;
+            std::map<Param, int> _baseStatus;
+        };
+
         const static int MAX_HP = 100;
 
         Piece();
-        Piece(Job job, Color color, const std::map<Param, int> &baseStatus, const std::map<Param, int> &individualStatus, Team team, int row, int col, bool king);
+        Piece(int masterId, const std::map<Param, int> &individualStatus, Team team, int row, int col, bool king);
         ~Piece();
-        Job getJob() const { return _job; };
-        Color getColor() const { return _color; };
-        int getBaseStatus(Param param) const { return _baseStatus.at(param); };
+
+        static void setMaster(int masterId, Job job, Color color, const std::map<Param, int> &baseStatus);
+
+        int getMasterId() const { return _masterId; };
+        Job getJob() const { return getMasters().at(_masterId)._job; };
+        Color getColor() const { return getMasters().at(_masterId)._color; };
+        int getBaseStatus(Param param) const { return getMasters().at(_masterId)._baseStatus.at(param); };
         int getIndividualStatus(Param param) const { return _individualStatus.at(param); };
         int getStatus(Param param) const {
-            return _baseStatus.at(param) + _individualStatus.at(param) * 2;
+            return getBaseStatus(param) + getIndividualStatus(param) * 2;
         };
         int getHp() const { return _hp; };
         Team getTeam() const { return _team; };
@@ -35,15 +46,14 @@ namespace yayoi {
         int applyDamage(int damage);
 
     private:
-        Job _job;
-        Color _color;
-        std::map<Param, int> _baseStatus;
+        int _masterId;
         std::map<Param, int> _individualStatus;
         int _hp;
         Team _team;
         std::pair<int, int> _position;
         bool _king;
         int _idInMatch;
+        static std::map<int, Master>& getMasters();
     };
 
 }

@@ -14,7 +14,8 @@ using namespace yayoi;
 
 - (void)setUp {
     [super setUp];
-    _p = new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, false);
+    Piece::setMaster(0, Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}});
+    _p = new Piece(0, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, false);
 }
 
 - (void)tearDown {

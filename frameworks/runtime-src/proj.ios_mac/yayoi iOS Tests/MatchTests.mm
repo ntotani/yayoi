@@ -15,6 +15,7 @@ using namespace yayoi;
 
 - (void)setUp {
     [super setUp];
+    Piece::setMaster(0, Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}});
     _match = new Match();
 }
 
@@ -52,15 +53,15 @@ using namespace yayoi;
 }
 
 Piece* createPiece() {
-    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, false);
+    return new Piece(0, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, false);
 }
 
 Piece* createKing() {
-    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, true);
+    return new Piece(0, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, RED, 0, 0, true);
 }
 
 Piece* createBlue() {
-    return new Piece(Piece::FIGHTER, Piece::SUN, {{Piece::POWER, 40}, {Piece::ARMOR, 40}, {Piece::RESIST, 40}}, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, BLUE, 0, 1, true);
+    return new Piece(0, {{Piece::POWER, 30}, {Piece::ARMOR, 30}, {Piece::RESIST, 30}}, BLUE, 0, 1, true);
 }
 
 - (void)testSetIds {
