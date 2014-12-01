@@ -144,6 +144,52 @@ int lua_yayoi_Piece_applyDamage(lua_State* tolua_S)
 
     return 0;
 }
+int lua_yayoi_Piece_setIdInMatch(lua_State* tolua_S)
+{
+    int argc = 0;
+    yayoi::Piece* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"yayoi.Piece",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (yayoi::Piece*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_yayoi_Piece_setIdInMatch'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 1) 
+    {
+        int arg0;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "yayoi.Piece:setIdInMatch");
+        if(!ok)
+            return 0;
+        cobj->setIdInMatch(arg0);
+        return 0;
+    }
+    CCLOG("%s has wrong number of arguments: %d, was expecting %d \n", "yayoi.Piece:setIdInMatch",argc, 1);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_yayoi_Piece_setIdInMatch'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_yayoi_Piece_getTeam(lua_State* tolua_S)
 {
     int argc = 0;
@@ -325,7 +371,7 @@ int lua_yayoi_Piece_applyChip(lua_State* tolua_S)
 
     return 0;
 }
-int lua_yayoi_Piece_setIdInMatch(lua_State* tolua_S)
+int lua_yayoi_Piece_getMasterId(lua_State* tolua_S)
 {
     int argc = 0;
     yayoi::Piece* cobj = nullptr;
@@ -345,28 +391,26 @@ int lua_yayoi_Piece_setIdInMatch(lua_State* tolua_S)
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_yayoi_Piece_setIdInMatch'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_yayoi_Piece_getMasterId'", nullptr);
         return 0;
     }
 #endif
 
     argc = lua_gettop(tolua_S)-1;
-    if (argc == 1) 
+    if (argc == 0) 
     {
-        int arg0;
-
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "yayoi.Piece:setIdInMatch");
         if(!ok)
             return 0;
-        cobj->setIdInMatch(arg0);
-        return 0;
+        int ret = cobj->getMasterId();
+        tolua_pushnumber(tolua_S,(lua_Number)ret);
+        return 1;
     }
-    CCLOG("%s has wrong number of arguments: %d, was expecting %d \n", "yayoi.Piece:setIdInMatch",argc, 1);
+    CCLOG("%s has wrong number of arguments: %d, was expecting %d \n", "yayoi.Piece:getMasterId",argc, 0);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_yayoi_Piece_setIdInMatch'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_yayoi_Piece_getMasterId'.",&tolua_err);
 #endif
 
     return 0;
@@ -594,6 +638,44 @@ int lua_yayoi_Piece_getPosition(lua_State* tolua_S)
 
     return 0;
 }
+int lua_yayoi_Piece_setMaster(lua_State* tolua_S)
+{
+    int argc = 0;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertable(tolua_S,1,"yayoi.Piece",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    argc = lua_gettop(tolua_S) - 1;
+
+    if (argc == 4)
+    {
+        int arg0;
+        yayoi::Piece::Job arg1;
+        yayoi::Piece::Color arg2;
+        std::map<yayoi::Piece::Param, int, std::less<yayoi::Piece::Param>, std::allocator<std::pair<const yayoi::Piece::Param, int> > > arg3;
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "yayoi.Piece:setMaster");
+        ok &= luaval_to_int32(tolua_S, 3,(int *)&arg1, "yayoi.Piece:setMaster");
+        ok &= luaval_to_int32(tolua_S, 4,(int *)&arg2, "yayoi.Piece:setMaster");
+        cocos2d::ValueMapIntKey vmikarg3;ok &= luaval_to_ccvaluemapintkey(tolua_S, 5, &vmikarg3, "yayoi.Piece:setMaster");for (auto e : vmikarg3) { arg3[static_cast<yayoi::Piece::Param>(e.first)] = e.second.asInt(); };
+        if(!ok)
+            return 0;
+        yayoi::Piece::setMaster(arg0, arg1, arg2, arg3);
+        return 0;
+    }
+    CCLOG("%s has wrong number of arguments: %d, was expecting %d\n ", "yayoi.Piece:setMaster",argc, 4);
+    return 0;
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_yayoi_Piece_setMaster'.",&tolua_err);
+#endif
+    return 0;
+}
 int lua_yayoi_Piece_constructor(lua_State* tolua_S)
 {
     int argc = 0;
@@ -605,40 +687,32 @@ int lua_yayoi_Piece_constructor(lua_State* tolua_S)
 
     argc = lua_gettop(tolua_S)-1;
     do{
-        if (argc == 8) {
-            yayoi::Piece::Job arg0;
+        if (argc == 6) {
+            int arg0;
             ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "yayoi.Piece:Piece");
 
             if (!ok) { break; }
-            yayoi::Piece::Color arg1;
-            ok &= luaval_to_int32(tolua_S, 3,(int *)&arg1, "yayoi.Piece:Piece");
+            std::map<yayoi::Piece::Param, int, std::less<yayoi::Piece::Param>, std::allocator<std::pair<const yayoi::Piece::Param, int> > > arg1;
+            cocos2d::ValueMapIntKey vmikarg1;ok &= luaval_to_ccvaluemapintkey(tolua_S, 3, &vmikarg1, "yayoi.Piece:Piece");for (auto e : vmikarg1) { arg1[static_cast<yayoi::Piece::Param>(e.first)] = e.second.asInt(); };
 
             if (!ok) { break; }
-            std::map<yayoi::Piece::Param, int, std::less<yayoi::Piece::Param>, std::allocator<std::pair<const yayoi::Piece::Param, int> > > arg2;
-            cocos2d::ValueMapIntKey vmikarg2;ok &= luaval_to_ccvaluemapintkey(tolua_S, 4, &vmikarg2, "yayoi.Piece:Piece");for (auto e : vmikarg2) { arg2[static_cast<yayoi::Piece::Param>(e.first)] = e.second.asInt(); };
+            yayoi::Team arg2;
+            ok &= luaval_to_int32(tolua_S, 4,(int *)&arg2, "yayoi.Piece:Piece");
 
             if (!ok) { break; }
-            std::map<yayoi::Piece::Param, int, std::less<yayoi::Piece::Param>, std::allocator<std::pair<const yayoi::Piece::Param, int> > > arg3;
-            cocos2d::ValueMapIntKey vmikarg3;ok &= luaval_to_ccvaluemapintkey(tolua_S, 5, &vmikarg3, "yayoi.Piece:Piece");for (auto e : vmikarg3) { arg3[static_cast<yayoi::Piece::Param>(e.first)] = e.second.asInt(); };
+            int arg3;
+            ok &= luaval_to_int32(tolua_S, 5,(int *)&arg3, "yayoi.Piece:Piece");
 
             if (!ok) { break; }
-            yayoi::Team arg4;
+            int arg4;
             ok &= luaval_to_int32(tolua_S, 6,(int *)&arg4, "yayoi.Piece:Piece");
 
             if (!ok) { break; }
-            int arg5;
-            ok &= luaval_to_int32(tolua_S, 7,(int *)&arg5, "yayoi.Piece:Piece");
+            bool arg5;
+            ok &= luaval_to_boolean(tolua_S, 7,&arg5, "yayoi.Piece:Piece");
 
             if (!ok) { break; }
-            int arg6;
-            ok &= luaval_to_int32(tolua_S, 8,(int *)&arg6, "yayoi.Piece:Piece");
-
-            if (!ok) { break; }
-            bool arg7;
-            ok &= luaval_to_boolean(tolua_S, 9,&arg7, "yayoi.Piece:Piece");
-
-            if (!ok) { break; }
-            cobj = new yayoi::Piece(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            cobj = new yayoi::Piece(arg0, arg1, arg2, arg3, arg4, arg5);
             tolua_pushusertype(tolua_S,(void*)cobj,"yayoi.Piece");
             tolua_register_gc(tolua_S,lua_gettop(tolua_S));
             return 1;
@@ -702,16 +776,18 @@ int lua_register_yayoi_Piece(lua_State* tolua_S)
         tolua_function(tolua_S,"getColor",lua_yayoi_Piece_getColor);
         tolua_function(tolua_S,"getStatus",lua_yayoi_Piece_getStatus);
         tolua_function(tolua_S,"applyDamage",lua_yayoi_Piece_applyDamage);
+        tolua_function(tolua_S,"setIdInMatch",lua_yayoi_Piece_setIdInMatch);
         tolua_function(tolua_S,"getTeam",lua_yayoi_Piece_getTeam);
         tolua_function(tolua_S,"getJob",lua_yayoi_Piece_getJob);
         tolua_function(tolua_S,"getBaseStatus",lua_yayoi_Piece_getBaseStatus);
         tolua_function(tolua_S,"applyChip",lua_yayoi_Piece_applyChip);
-        tolua_function(tolua_S,"setIdInMatch",lua_yayoi_Piece_setIdInMatch);
+        tolua_function(tolua_S,"getMasterId",lua_yayoi_Piece_getMasterId);
         tolua_function(tolua_S,"getIndividualStatus",lua_yayoi_Piece_getIndividualStatus);
         tolua_function(tolua_S,"getHp",lua_yayoi_Piece_getHp);
         tolua_function(tolua_S,"isKing",lua_yayoi_Piece_isKing);
         tolua_function(tolua_S,"getIdInMatch",lua_yayoi_Piece_getIdInMatch);
         tolua_function(tolua_S,"getPosition",lua_yayoi_Piece_getPosition);
+        tolua_function(tolua_S,"setMaster", lua_yayoi_Piece_setMaster);
     tolua_endmodule(tolua_S);
     std::string typeName = typeid(yayoi::Piece).name();
     g_luaType[typeName] = "yayoi.Piece";

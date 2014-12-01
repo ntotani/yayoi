@@ -25,6 +25,12 @@
         
 --------------------------------
 -- 
+-- @function [parent=#Piece] setIdInMatch 
+-- @param self
+-- @param #int idInMatch
+        
+--------------------------------
+-- 
 -- @function [parent=#Piece] getTeam 
 -- @param self
 -- @return int#int ret (return value: int)
@@ -50,9 +56,9 @@
         
 --------------------------------
 -- 
--- @function [parent=#Piece] setIdInMatch 
+-- @function [parent=#Piece] getMasterId 
 -- @param self
--- @param #int idInMatch
+-- @return int#int ret (return value: int)
         
 --------------------------------
 -- 
@@ -86,13 +92,20 @@
 -- @return std::pair<int, int>#std::pair<int, int> ret (return value: std::pair<int, int>)
         
 --------------------------------
--- @overload self, int, int, map_table, map_table, int, int, int, bool         
--- @overload self         
--- @function [parent=#Piece] Piece
+-- 
+-- @function [parent=#Piece] setMaster 
 -- @param self
+-- @param #int masterId
 -- @param #int job
 -- @param #int color
 -- @param #map_table baseStatus
+        
+--------------------------------
+-- @overload self, int, map_table, int, int, int, bool         
+-- @overload self         
+-- @function [parent=#Piece] Piece
+-- @param self
+-- @param #int masterId
 -- @param #map_table individualStatus
 -- @param #int team
 -- @param #int row
