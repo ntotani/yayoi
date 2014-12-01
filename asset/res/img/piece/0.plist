@@ -4,36 +4,23 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>boy_00.png</key>
+            <key>0_00.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,34},{28,32}}</string>
+                <string>{{28,102},{28,32}}</string>
                 <key>offset</key>
                 <string>{-1,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{1,0},{28,32}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_01.png</key>
+            <key>0_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{102,2},{26,32}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{3,0},{26,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>boy_02.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{92,30},{26,32}}</string>
+                <string>{{30,136},{26,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -43,23 +30,36 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_03.png</key>
+            <key>0_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{68,2},{26,32}}</string>
+                <string>{{30,170},{26,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>0_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,170},{26,32}}</string>
                 <key>offset</key>
                 <string>{-3,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{26,32}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_04.png</key>
+            <key>0_04.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{64,30},{26,32}}</string>
+                <string>{{2,136},{26,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -69,10 +69,10 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_05.png</key>
+            <key>0_05.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{146,28},{24,32}}</string>
+                <string>{{2,102},{24,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -82,7 +82,7 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_06.png</key>
+            <key>0_06.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,2},{30,30}}</string>
@@ -95,20 +95,20 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_07.png</key>
+            <key>0_07.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{136,2},{24,32}}</string>
+                <string>{{30,34},{24,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{4,0},{24,32}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_08.png</key>
+            <key>0_08.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,2},{30,30}}</string>
@@ -121,10 +121,10 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_09.png</key>
+            <key>0_09.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{120,30},{24,32}}</string>
+                <string>{{30,68},{24,32}}</string>
                 <key>offset</key>
                 <string>{-2,0}</string>
                 <key>rotated</key>
@@ -134,10 +134,10 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_10.png</key>
+            <key>0_10.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{36,30},{26,32}}</string>
+                <string>{{2,68},{26,32}}</string>
                 <key>offset</key>
                 <string>{-1,0}</string>
                 <key>rotated</key>
@@ -147,14 +147,14 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>boy_11.png</key>
+            <key>0_11.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{34,2},{26,32}}</string>
+                <string>{{2,34},{26,32}}</string>
                 <key>offset</key>
                 <string>{-1,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{2,0},{26,32}}</string>
                 <key>sourceSize</key>
@@ -166,13 +166,13 @@
             <key>format</key>
             <integer>2</integer>
             <key>realTextureFileName</key>
-            <string>boy.png</string>
+            <string>0.png</string>
             <key>size</key>
-            <string>{172,64}</string>
+            <string>{58,204}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:e708bd404e419f36b32ec669229d0a31:1c0e99b5fde5fbe35a442d5a4cc86889:4f9586d774674a78bae24f6fced21f65$</string>
+            <string>$TexturePacker:SmartUpdate:fb0bfb64df7a4a629ac8cb8a7f4d87d3:1/1$</string>
             <key>textureFileName</key>
-            <string>boy.png</string>
+            <string>0.png</string>
         </dict>
     </dict>
 </plist>

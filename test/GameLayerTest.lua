@@ -33,8 +33,11 @@ local function main()
     bs["0"] = 10
     bs["1"] = 11
     bs["2"] = 12
-    local red  = yayoi.Piece:new(1, 1, bs, bs, 0, 2, 0, true)
-    local blue = yayoi.Piece:new(1, 1, bs, bs, 1, 2, 4, true)
+    yayoi.Piece:setMaster(0, 1, 1, bs)
+    yayoi.Piece:setMaster(1, 1, 1, bs)
+    yayoi.Piece:setMaster(2, 1, 1, bs)
+    local red  = yayoi.Piece:new(0, bs, 0, 2, 0, true)
+    local blue = yayoi.Piece:new(2, bs, 1, 2, 4, true)
     local freq = {}
     freq[yayoi.Chip:new( 0, 1)] = 6 -- front
     freq[yayoi.Chip:new( 1, 0)] = 3 -- up

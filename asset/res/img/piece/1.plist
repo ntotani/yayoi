@@ -4,159 +4,159 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>witch_00.png</key>
+            <key>1_00.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{30,32}}</string>
-                <key>offset</key>
-                <string>{-1,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_01.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{34,2},{30,32}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{1,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_02.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{66,2},{30,32}}</string>
-                <key>offset</key>
-                <string>{1,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{2,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_03.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,36},{30,32}}</string>
-                <key>offset</key>
-                <string>{1,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{2,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_04.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,36},{30,32}}</string>
-                <key>offset</key>
-                <string>{1,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{2,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_05.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{34,36},{30,32}}</string>
-                <key>offset</key>
-                <string>{1,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{2,0},{30,32}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_06.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{66,36},{32,28}}</string>
-                <key>offset</key>
-                <string>{0,-2}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,4},{32,28}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_07.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,70},{30,30}}</string>
+                <string>{{2,66},{28,30}}</string>
                 <key>offset</key>
                 <string>{0,-1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{1,2},{30,30}}</string>
+                <string>{{2,2},{28,30}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>witch_08.png</key>
+            <key>1_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{66,36},{32,28}}</string>
-                <key>offset</key>
-                <string>{0,-2}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,4},{32,28}}</string>
-                <key>sourceSize</key>
-                <string>{32,32}</string>
-            </dict>
-            <key>witch_09.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{34,70},{30,32}}</string>
+                <string>{{30,100},{26,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{1,0},{30,32}}</string>
+                <string>{{3,0},{26,32}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>witch_10.png</key>
+            <key>1_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{34,2},{30,32}}</string>
+                <string>{{2,134},{26,32}}</string>
+                <key>offset</key>
+                <string>{-1,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,100},{26,32}}</string>
+                <key>offset</key>
+                <string>{-3,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_04.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{30,134},{26,32}}</string>
+                <key>offset</key>
+                <string>{-1,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_05.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{30,34},{24,30}}</string>
+                <key>offset</key>
+                <string>{1,-1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{5,2},{24,30}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_06.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,168},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{1,0},{30,32}}</string>
+                <string>{{0,0},{32,32}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>witch_11.png</key>
+            <key>1_07.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{66,70},{30,32}}</string>
+                <string>{{30,2},{24,30}}</string>
+                <key>offset</key>
+                <string>{0,-1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{4,2},{24,30}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_08.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,168},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{1,0},{30,32}}</string>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_09.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{26,30}}</string>
+                <key>offset</key>
+                <string>{-1,-1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{26,30}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_10.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{32,66},{26,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>1_11.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,34},{26,30}}</string>
+                <key>offset</key>
+                <string>{1,-1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{4,2},{26,30}}</string>
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
@@ -166,13 +166,13 @@
             <key>format</key>
             <integer>2</integer>
             <key>realTextureFileName</key>
-            <string>witch.png</string>
+            <string>1.png</string>
             <key>size</key>
-            <string>{100,104}</string>
+            <string>{60,202}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:955eadc653aed4566209092709c2d788:1/1$</string>
+            <string>$TexturePacker:SmartUpdate:ec93371849f11dc1e180e8edd46a0cd6:1/1$</string>
             <key>textureFileName</key>
-            <string>witch.png</string>
+            <string>1.png</string>
         </dict>
     </dict>
 </plist>

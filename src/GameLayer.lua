@@ -54,13 +54,11 @@ end
 
 function GameLayer:initHeros(dir, corner)
     local layer = cc.Layer:create()
-    local jobs = {"Player", "Witch", "Tank"}
     local pieces = self.ctx:getMatch():getPieces()
     local myTeam = corner == "red" and 0 or 1
     _.each(pieces, function(e)
         if e:getTeam() ~= myTeam then return end
-        local job = _.shift(jobs)
-        local player = CCBReaderLoad(job .. "Node.ccbi", cc.CCBProxy:create(), nil)
+        local player = CCBReaderLoad("piece/" .. e:getMasterId() .. ".ccbi", cc.CCBProxy:create(), nil)
         local row = e:getPosition().first
         local col = e:getPosition().second
         player:setPosition(self:idx2tilePos(row, col))

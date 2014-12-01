@@ -45,8 +45,8 @@
 									<integer>7</integer>
 									<key>value</key>
 									<array>
-										<string>witch_00.png</string>
-										<string>img/witch.plist</string>
+										<string>0_00.png</string>
+										<string>img/piece/0.plist</string>
 									</array>
 								</dict>
 								<dict>
@@ -63,8 +63,8 @@
 									<integer>7</integer>
 									<key>value</key>
 									<array>
-										<string>witch_01.png</string>
-										<string>img/witch.plist</string>
+										<string>0_01.png</string>
+										<string>img/piece/0.plist</string>
 									</array>
 								</dict>
 								<dict>
@@ -81,8 +81,8 @@
 									<integer>7</integer>
 									<key>value</key>
 									<array>
-										<string>witch_02.png</string>
-										<string>img/witch.plist</string>
+										<string>0_02.png</string>
+										<string>img/piece/0.plist</string>
 									</array>
 								</dict>
 								<dict>
@@ -99,8 +99,8 @@
 									<integer>7</integer>
 									<key>value</key>
 									<array>
-										<string>witch_01.png</string>
-										<string>img/witch.plist</string>
+										<string>0_01.png</string>
+										<string>img/piece/0.plist</string>
 									</array>
 								</dict>
 							</array>
@@ -160,8 +160,8 @@
 					<dict>
 						<key>baseValue</key>
 						<array>
-							<string>boy_00.png</string>
-							<string>img/boy.plist</string>
+							<string>0_01.png</string>
+              <string>img/piece/0.plist</string>
 						</array>
 						<key>name</key>
 						<string>displayFrame</string>
@@ -169,8 +169,8 @@
 						<string>SpriteFrame</string>
 						<key>value</key>
 						<array>
-							<string>img/witch.plist</string>
-							<string>witch_01.png</string>
+							<string>img/piece/0.plist</string>
+							<string>0_01.png</string>
 						</array>
 					</dict>
 				</array>
@@ -183,7 +183,7 @@
 		<key>displayName</key>
 		<string>CCNode</string>
 		<key>jsController</key>
-		<string>WitchNode</string>
+		<string>PlayerNode</string>
 		<key>memberVarAssignmentName</key>
 		<string></string>
 		<key>memberVarAssignmentType</key>
@@ -264,7 +264,7 @@
 			<key>offset</key>
 			<real>0.0</real>
 			<key>position</key>
-			<real>0.66666668653488159</real>
+			<real>0.5</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>
