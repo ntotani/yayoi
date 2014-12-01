@@ -47,7 +47,7 @@ local function main()
     local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
     local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
     local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
-    local bKnight  = yayoi.Piece:new(0, iv, 1, 0, 4, false)
+    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
     local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
     local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
     local freq = {}
@@ -62,7 +62,11 @@ local function main()
         getCorner = function(self) return "red" end,
         act = function(self, playerID, chipID)
             local p = match:getPieces()[playerID + 1]
-            self.callback({match:applyChip(p, chipID), match:applyChip(bKnight, 0)})
+            local results = {match:applyChip(p, chipID)}
+            if match:wonTeam() == 2 then
+                table.insert(results, match:applyChip(bKing, 0))
+            end
+            self.callback(results)
         end,
         getMatch = function(self) return match end
     }

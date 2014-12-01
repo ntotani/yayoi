@@ -26,7 +26,7 @@ function GameContext:ctor(ws, matchID, corner, form, seed)
     local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
     local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
     local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
-    local bKnight  = yayoi.Piece:new(0, iv, 1, 0, 4, false)
+    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
     local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
     local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
     local freq = {}
@@ -41,16 +41,20 @@ function GameContext:ctor(ws, matchID, corner, form, seed)
         msg = json.decode(msg)
         if msg.event == "turn" then
             local data = json.decode(msg.data)
-            data = _.map(data, function(e)
+            local results = {}
+            for i, e in ipairs(data) do
                 local playerID = tonumber(e:sub(1, 1))
                 local chipID = tonumber(e:sub(2, 2))
                 local actor = _.detect(self._match:getPieces(), function(e)
                     return e:getIdInMatch() == playerID
                 end)
-                return self._match:applyChip(actor, chipID)
-            end)
+                table.insert(results, self._match:applyChip(actor, chipID))
+                if self._match:wonTeam() ~= 2 then
+                    break
+                end
+            end
             for i, e in ipairs(self.listeners.turn) do
-                e(data)
+                e(results)
             end
         end
     end, cc.WEBSOCKET_MESSAGE)

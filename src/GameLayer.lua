@@ -161,6 +161,19 @@ function GameLayer:onTurn(data)
     local func = function()end
     func = function(i)
         if i > #data then
+
+            -- finish if match over
+            local wonTeam = self.ctx:getMatch():wonTeam()
+            if wonTeam ~= 2 then
+                ccb.ResultLayer = { onOk = function()end }
+                self:addChild(CCBReaderLoad("ResultLayer.ccbi", cc.CCBProxy:create(), nil))
+                local myTeam = self.ctx:getCorner() == "red" and 0 or 1
+                if myTeam ~= wonTeam then
+                    ccb.ResultLayer.mAnimationManager:runAnimationsForSequenceNamed("lose")
+                end
+                return
+            end
+
             local shift = function(chips, deck, turn)
                 for i, chip in ipairs(chips:getChildren()) do
                     local idx = 0
