@@ -32,13 +32,13 @@ local function main()
     local master = cc.FileUtils:getInstance():getStringFromFile("piece.json")
     master = require("json").decode(master)
     local jobs = {FIGHTER = 0, MAGE = 1, HEALER = 2}
-    local colosr = { SUN=0, MON=1, TUE=2, WED=3, THU=4, FRI=5, SAT=6 }
+    local colors = { SUN=0, MON=1, TUE=2, WED=3, THU=4, FRI=5, SAT=6 }
     for k, v in pairs(master) do
         local bs = {}
         bs["0"] = v[3]
         bs["1"] = v[4]
         bs["2"] = v[5]
-        yayoi.Piece:setMaster(k, v[1], v[2], bs)
+        yayoi.Piece:setMaster(tonumber(k), jobs[v[1]], colors[v[2]], bs)
     end
     local iv = {}
     iv["0"] = 30
@@ -47,7 +47,7 @@ local function main()
     local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
     local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
     local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
-    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
+    local bKnight  = yayoi.Piece:new(0, iv, 1, 0, 1, false)
     local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
     local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
     local freq = {}

@@ -58,18 +58,26 @@ function GameLayer:initHeros(dir, corner)
     local myTeam = corner == "red" and 0 or 1
     _.each(pieces, function(e)
         if e:getTeam() ~= myTeam then return end
-        local player = CCBReaderLoad("piece/" .. e:getMasterId() .. ".ccbi", cc.CCBProxy:create(), nil)
+        local player = cc.Node:create()
         local row = e:getPosition().first
         local col = e:getPosition().second
         player:setPosition(self:idx2tilePos(row, col))
-        player:setScaleX(dir)
         player.model = e
-        player.hearts = _.range(1, 3):map(function(i)
-            local heart = cc.Sprite:create("img/heart.png")
-            heart:setPosition((i - 2) * heart:getContentSize().width, 20)
-            player:addChild(heart)
-            return heart
-        end)
+        local ccb = CCBReaderLoad("piece/" .. e:getMasterId() .. ".ccbi", cc.CCBProxy:create(), nil)
+        ccb:setScaleX(dir)
+        player:addChild(ccb)
+        local gauge = cc.DrawNode:create()
+        player.applyHpGauge = function()
+            gauge:drawSolidRect(cc.p(-12, 15), cc.p(12, 19), cc.c4f(0, 0, 0, 1))
+            local color = cc.c4f(0, 1, 0, 1)
+            if e:getHp() <= 25 then color = cc.c4f(1, 0, 0, 1)
+            elseif e:getHp() <= 50 then color = cc.c4f(1, 1, 0, 1)
+            end
+            local len = 11
+            gauge:drawSolidRect(cc.p(-len, 16), cc.p(len * 2 * e:getHp() / 100 - len, 18), color)
+        end
+        player:applyHpGauge()
+        player:addChild(gauge)
         layer:addChild(player)
     end)
     return layer
@@ -177,7 +185,8 @@ function GameLayer:onTurn(data)
             local eq = function(e) return e.model == ar:getActor() end
             local target = _.detect(self.friendsLayer:getChildren(), eq)
             target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-            local chips = target:getScaleX() < 0 and self.myChipsLayer or self.hisChipsLayer
+            local myTeam = self.ctx:getCorner() == "red" and 0 or 1
+            local chips = target.model:getTeam() == myTeam and self.myChipsLayer or self.hisChipsLayer
             local chip = _.detect(chips:getChildren(), function(e) return e.model == ar:getChip() end)
             self:action(ar, target, chip, _.curry(func, i + 1))
         end
@@ -211,12 +220,11 @@ function GameLayer:action(ar, player, chip, callback)
                 local eq = function(e) return e.model == ar:getTarget() end
                 local target = _.detect(self.friendsLayer:getChildren(), eq)
                 target = target or _.detect(self.enemiesLayer:getChildren(), eq)
-                local dmg = 1
                 if type == 3 then -- KILL
                     target:removeFromParent()
                     gain()
                 else -- ATTACK
-                    for i=1, dmg do _(target.hearts):pop():removeFromParent() end
+                    target:applyHpGauge()
                 end
             end
             table.insert(playerSeq, cc.CallFunc:create(callback))
