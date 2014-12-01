@@ -182,13 +182,18 @@ function GameLayer:onTurn(data)
             self.canTouch = true
         else
             local ar = data[i]
-            local eq = function(e) return e.model == ar:getActor() end
-            local target = _.detect(self.friendsLayer:getChildren(), eq)
-            target = target or _.detect(self.enemiesLayer:getChildren(), eq)
             local myTeam = self.ctx:getCorner() == "red" and 0 or 1
-            local chips = target.model:getTeam() == myTeam and self.myChipsLayer or self.hisChipsLayer
+            local chips = ar:getActor():getTeam() == myTeam and self.myChipsLayer or self.hisChipsLayer
             local chip = _.detect(chips:getChildren(), function(e) return e.model == ar:getChip() end)
-            self:action(ar, target, chip, _.curry(func, i + 1))
+            if ar:getType() == 4 then -- DEAD
+                chip:removeFromParent()
+                func(i + 1)
+            else
+                local eq = function(e) return e.model == ar:getActor() end
+                local target = _.detect(self.friendsLayer:getChildren(), eq)
+                target = target or _.detect(self.enemiesLayer:getChildren(), eq)
+                self:action(ar, target, chip, _.curry(func, i + 1))
+            end
         end
     end
     func(1)
@@ -221,7 +226,9 @@ function GameLayer:action(ar, player, chip, callback)
                 local target = _.detect(self.friendsLayer:getChildren(), eq)
                 target = target or _.detect(self.enemiesLayer:getChildren(), eq)
                 if type == 3 then -- KILL
-                    target:removeFromParent()
+                    table.insert(playerSeq, cc.CallFunc:create(function()
+                        target:removeFromParent()
+                    end))
                     gain()
                 else -- ATTACK
                     target:applyHpGauge()
