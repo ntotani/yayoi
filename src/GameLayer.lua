@@ -112,20 +112,7 @@ end
 
 function GameLayer:drawChip(idx, layer, turn, corner)
     local deck = self.ctx:getMatch():getDeck(corner == "red" and 0 or 1)
-    local dir = deck[idx]:getDir()
-    local name = ""
-    if dir.second == 1 then
-        if dir.first == 1 then
-            name = "ufront"
-        elseif dir.first == -1 then
-            name = "dfront"
-        else
-            name = "front"
-        end
-    else
-        name = dir.first > 0 and "up" or "down"
-    end
-    local chip = cc.Sprite:create("img/chip_" .. name .. ".png")
+    local chip = self:createChipNode(deck[idx]:getDir())
     chip.model = deck[idx]
     chip.idx = idx
     chip:setPosition(self:idx2chipPos(idx, turn))
@@ -133,9 +120,27 @@ function GameLayer:drawChip(idx, layer, turn, corner)
     layer:addChild(chip)
 end
 
+function GameLayer:createChipNode(dir)
+    local node = cc.DrawNode:create()
+    node:drawSolidRect(cc.p(-24, -24), cc.p(24, 24), cc.c4f(0, 0, 0, 1))
+    for i = -1, 1 do
+        for j = -1, 1 do
+            local x = 15 * j - 6
+            local y = 15 * i - 6
+            node:drawSolidRect(cc.p(x, y), cc.p(x + 12, y + 12), cc.c4f(1, 1, 1, 1))
+        end
+    end
+    node:drawSolidRect(cc.p(-5, -5), cc.p(5, 5), cc.c4f(0, 0, 0, 1))
+    local x = 15 * dir.second - 5
+    local y = 15 * dir.first - 5
+    node:drawSolidRect(cc.p(x, y), cc.p(x + 10, y + 10), cc.c4f(1, 0, 0, 1))
+    return node
+end
+
 function GameLayer:onTouchBegan(touch, event)
     self.holdChip = _.detect(self.myChipsLayer:getChildren(), function(e)
-        return cc.rectContainsPoint(e:getBoundingBox() ,touch:getLocation())
+        local bb = cc.rect(e:getPositionX() - 24, e:getPositionY() - 24, 48, 48)
+        return cc.rectContainsPoint(bb, touch:getLocation())
     end)
     return self.holdChip ~= nil and self.canTouch
 end
@@ -242,7 +247,7 @@ function GameLayer:action(ar, player, chip, callback)
                     table.insert(playerSeq, cc.CallFunc:create(function()
                         target:removeFromParent()
                     end))
-                    gain()
+                gain()
                 else -- ATTACK
                     target:applyHpGauge()
                 end
