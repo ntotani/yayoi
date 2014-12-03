@@ -30,11 +30,14 @@ function GameContext:ctor(ws, matchID, corner, form, seed)
     local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
     local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
     local freq = {}
-    freq[yayoi.Chip:new( 0, 1)] = 6 -- front
-    freq[yayoi.Chip:new( 1, 0)] = 3 -- up
-    freq[yayoi.Chip:new(-1, 0)] = 3 -- down
-    freq[yayoi.Chip:new( 1, 1)] = 6 -- ufront
-    freq[yayoi.Chip:new(-1, 1)] = 6 -- dfront
+    freq[yayoi.Chip:new( 0,  1)] = 5 -- front
+    freq[yayoi.Chip:new(-1,  1)] = 4 -- dfront
+    freq[yayoi.Chip:new(-1,  0)] = 2 -- down
+    freq[yayoi.Chip:new(-1, -1)] = 1 -- dback
+    freq[yayoi.Chip:new( 0, -1)] = 2 -- back
+    freq[yayoi.Chip:new( 1, -1)] = 1 -- uback
+    freq[yayoi.Chip:new( 1,  1)] = 4 -- ufront
+    freq[yayoi.Chip:new( 1,  0)] = 2 -- up
     self._match = yayoi.Match:new(0, {rKnight, rKing, rWitch, bKnight, bKing, bWitch}, 5, 5, freq)
     self.listeners = {}
     ws:registerScriptHandler(function(msg)
