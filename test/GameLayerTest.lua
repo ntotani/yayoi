@@ -41,6 +41,7 @@ local function main()
         yayoi.Piece:setMaster(tonumber(k), jobs[v[1]], colors[v[2]], bs)
     end
     local match = {}
+    local bKing = {}
     local ctx = {
         on = function(self, event, callback) self.callback = callback end,
         getCorner = function(self) return "red" end,
@@ -62,7 +63,7 @@ local function main()
             local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
             local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
             local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
-            local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
+                  bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
             local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
             local freq = {}
             freq[yayoi.Chip:new( 0,  1)] = 5 -- front

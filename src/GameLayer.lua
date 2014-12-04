@@ -238,8 +238,13 @@ function GameLayer:action(ar, player, chip, callback)
             local lush = function()
                 local pos = player.model:getPosition()
                 local move = ar:getMove()
-                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first + move.first, pos.second + move.second)))
-                table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first, pos.second)))
+                if ar:getType() == 3 then
+                    table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first, pos.second)))
+                    table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first - move.first, pos.second - move.second)))
+                else
+                    table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first + move.first, pos.second + move.second)))
+                    table.insert(playerSeq, cc.MoveTo:create(0.1, self:idx2tilePos(pos.first, pos.second)))
+                end
                 table.insert(playerSeq, cc.DelayTime:create(0.3))
             end
             local gain = function()
