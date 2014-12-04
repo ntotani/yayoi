@@ -1642,6 +1642,53 @@ int lua_yayoi_Match_getDeck(lua_State* tolua_S)
 
     return 0;
 }
+int lua_yayoi_Match_getCastle(lua_State* tolua_S)
+{
+    int argc = 0;
+    yayoi::Match* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"yayoi.Match",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (yayoi::Match*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_yayoi_Match_getCastle'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 1) 
+    {
+        yayoi::Team arg0;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "yayoi.Match:getCastle");
+        if(!ok)
+            return 0;
+        const std::pair<int, int>& ret = cobj->getCastle(arg0);
+        ipair_to_luaval(tolua_S, ret);
+        return 1;
+    }
+    CCLOG("%s has wrong number of arguments: %d, was expecting %d \n", "yayoi.Match:getCastle",argc, 1);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_yayoi_Match_getCastle'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_yayoi_Match_applyChip(lua_State* tolua_S)
 {
     int argc = 0;
@@ -1912,6 +1959,7 @@ int lua_register_yayoi_Match(lua_State* tolua_S)
         tolua_function(tolua_S,"getCol",lua_yayoi_Match_getCol);
         tolua_function(tolua_S,"getRow",lua_yayoi_Match_getRow);
         tolua_function(tolua_S,"getDeck",lua_yayoi_Match_getDeck);
+        tolua_function(tolua_S,"getCastle",lua_yayoi_Match_getCastle);
         tolua_function(tolua_S,"applyChip",lua_yayoi_Match_applyChip);
         tolua_function(tolua_S,"getPieces",lua_yayoi_Match_getPieces);
         tolua_function(tolua_S,"wonTeam",lua_yayoi_Match_wonTeam);

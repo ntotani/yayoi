@@ -31,6 +31,13 @@
         
 --------------------------------
 -- 
+-- @function [parent=#Match] getCastle 
+-- @param self
+-- @param #int team
+-- @return std::pair<int, int>#std::pair<int, int> ret (return value: std::pair<int, int>)
+        
+--------------------------------
+-- 
 -- @function [parent=#Match] applyChip 
 -- @param self
 -- @param #yayoi.Piece target
