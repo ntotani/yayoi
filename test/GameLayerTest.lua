@@ -40,26 +40,7 @@ local function main()
         bs["2"] = v[5]
         yayoi.Piece:setMaster(tonumber(k), jobs[v[1]], colors[v[2]], bs)
     end
-    local iv = {}
-    iv["0"] = 30
-    iv["1"] = 30
-    iv["2"] = 30
-    local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
-    local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
-    local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
-    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
-    local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
-    local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
-    local freq = {}
-    freq[yayoi.Chip:new( 0,  1)] = 5 -- front
-    freq[yayoi.Chip:new(-1,  1)] = 4 -- dfront
-    freq[yayoi.Chip:new(-1,  0)] = 2 -- down
-    freq[yayoi.Chip:new(-1, -1)] = 1 -- dback
-    freq[yayoi.Chip:new( 0, -1)] = 2 -- back
-    freq[yayoi.Chip:new( 1, -1)] = 1 -- uback
-    freq[yayoi.Chip:new( 1,  1)] = 4 -- ufront
-    freq[yayoi.Chip:new( 1,  0)] = 2 -- up
-    local match = yayoi.Match:new(0, {rKnight, rKing, rWitch, bKnight, bKing, bWitch}, 5, 5, freq)
+    local match = {}
     local ctx = {
         on = function(self, event, callback) self.callback = callback end,
         getCorner = function(self) return "red" end,
@@ -71,8 +52,31 @@ local function main()
             end
             self.callback(results)
         end,
-        getMatch = function(self) return match end
+        getMatch = function(self) return match end,
+        initMatch = function(self)
+            local iv = {}
+            iv["0"] = 30
+            iv["1"] = 30
+            iv["2"] = 30
+            local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
+            local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
+            local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
+            local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
+            local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
+            local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
+            local freq = {}
+            freq[yayoi.Chip:new( 0,  1)] = 5 -- front
+            freq[yayoi.Chip:new(-1,  1)] = 4 -- dfront
+            freq[yayoi.Chip:new(-1,  0)] = 2 -- down
+            freq[yayoi.Chip:new(-1, -1)] = 1 -- dback
+            freq[yayoi.Chip:new( 0, -1)] = 2 -- back
+            freq[yayoi.Chip:new( 1, -1)] = 1 -- uback
+            freq[yayoi.Chip:new( 1,  1)] = 4 -- ufront
+            freq[yayoi.Chip:new( 1,  0)] = 2 -- up
+            match = yayoi.Match:new(0, {rKnight, rKing, rWitch, bKnight, bKing, bWitch}, 5, 5, freq)
+        end
     }
+    ctx.initMatch()
 
     --create scene
     local layer = require("GameLayer").new(ctx)

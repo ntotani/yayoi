@@ -19,27 +19,7 @@ function GameContext:ctor(ws, matchID, corner, form, seed)
         bs["2"] = v[5]
         yayoi.Piece:setMaster(tonumber(k), jobs[v[1]], colors[v[2]], bs)
     end
-    local iv = {}
-    iv["0"] = 30
-    iv["1"] = 30
-    iv["2"] = 30
-    local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
-    local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
-    local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
-    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
-    local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
-    local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
-    local freq = {}
-    freq[yayoi.Chip:new( 0,  1)] = 5 -- front
-    freq[yayoi.Chip:new(-1,  1)] = 4 -- dfront
-    freq[yayoi.Chip:new(-1,  0)] = 2 -- down
-    freq[yayoi.Chip:new(-1, -1)] = 1 -- dback
-    freq[yayoi.Chip:new( 0, -1)] = 2 -- back
-    freq[yayoi.Chip:new( 1, -1)] = 1 -- uback
-    freq[yayoi.Chip:new( 1,  1)] = 4 -- ufront
-    freq[yayoi.Chip:new( 1,  0)] = 2 -- up
-    self._match = yayoi.Match:new(0, {rKnight, rKing, rWitch, bKnight, bKing, bWitch}, 5, 5, freq)
-    self.listeners = {}
+    self:initMatch()
     ws:registerScriptHandler(function(msg)
         msg = json.decode(msg)
         if msg.event == "turn" then
@@ -61,6 +41,30 @@ function GameContext:ctor(ws, matchID, corner, form, seed)
             end
         end
     end, cc.WEBSOCKET_MESSAGE)
+end
+
+function GameContext:initMatch()
+    local iv = {}
+    iv["0"] = 30
+    iv["1"] = 30
+    iv["2"] = 30
+    local rKnight  = yayoi.Piece:new(0, iv, 0, 1, 0, false)
+    local rKing    = yayoi.Piece:new(1, iv, 0, 2, 0, true)
+    local rWitch   = yayoi.Piece:new(2, iv, 0, 3, 0, false)
+    local bKnight  = yayoi.Piece:new(0, iv, 1, 1, 4, false)
+    local bKing    = yayoi.Piece:new(1, iv, 1, 2, 4, true)
+    local bWitch   = yayoi.Piece:new(2, iv, 1, 3, 4, false)
+    local freq = {}
+    freq[yayoi.Chip:new( 0,  1)] = 5 -- front
+    freq[yayoi.Chip:new(-1,  1)] = 4 -- dfront
+    freq[yayoi.Chip:new(-1,  0)] = 2 -- down
+    freq[yayoi.Chip:new(-1, -1)] = 1 -- dback
+    freq[yayoi.Chip:new( 0, -1)] = 2 -- back
+    freq[yayoi.Chip:new( 1, -1)] = 1 -- uback
+    freq[yayoi.Chip:new( 1,  1)] = 4 -- ufront
+    freq[yayoi.Chip:new( 1,  0)] = 2 -- up
+    self._match = yayoi.Match:new(0, {rKnight, rKing, rWitch, bKnight, bKing, bWitch}, 5, 5, freq)
+    self.listeners = {}
 end
 
 function GameContext:getCorner()
@@ -89,7 +93,6 @@ function GameContext:act(playerID, chipID)
     xhr:registerScriptHandler(function()
         if xhr.readyState == 4 and (xhr.status >= 200 and xhr.status < 207) then
             --print(xhr.response)
-            print("ok")
         else
             print("xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status)
         end

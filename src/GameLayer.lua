@@ -178,7 +178,12 @@ function GameLayer:onTurn(data)
             -- finish if match over
             local wonTeam = self.ctx:getMatch():wonTeam()
             if wonTeam ~= 2 then
-                ccb.ResultLayer = { onOk = function()end }
+                ccb.ResultLayer = { onOk = function()
+                    self.ctx:initMatch()
+                    local scene = cc.Scene:create()
+                    scene:addChild(GameLayer.new(self.ctx))
+                    cc.Director:getInstance():replaceScene(scene)
+                end }
                 self:addChild(CCBReaderLoad("ResultLayer.ccbi", cc.CCBProxy:create(), nil))
                 local myTeam = self.ctx:getCorner() == "red" and 0 or 1
                 if myTeam ~= wonTeam then
